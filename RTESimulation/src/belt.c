@@ -18,7 +18,7 @@ char get_belt0_element(uint16_t element)
 {
 	if (element >= BELT_LENGTH_U)
 	{
-		return ERROR; // Error: element does not exist
+		return beltERROR; // beltERROR: element does not exist
 	}
 	else
 	{
@@ -30,7 +30,7 @@ char get_belt1_element(uint16_t element)
 {
 	if (element >= BELT_LENGTH_U)
 	{
-		return ERROR; // Error: element does not exist
+		return beltERROR; // beltERROR: element does not exist
 	}
 	else
 	{
@@ -58,9 +58,9 @@ void clear_belt1(void)
 
 char place_large_block_belt0(void)
 {
-	if (check_starting_zone(0) != OK)
+	if (check_starting_zone(0) != beltOK)
 	{
-		return FAIL;
+		return beltFAIL;
 	}
 
 	int i = 0;
@@ -68,14 +68,14 @@ char place_large_block_belt0(void)
 	{
 		belt0[i] = 1;
 	}
-	return OK;
+	return beltOK;
 }
 
 char place_large_block_belt1(void)
 {
-	if (check_starting_zone(1) != OK)
+	if (check_starting_zone(1) != beltOK)
 	{
-		return FAIL;
+		return beltFAIL;
 	}
 
 	int i = 0;
@@ -83,14 +83,14 @@ char place_large_block_belt1(void)
 	{
 		belt1[i] = 0x1;
 	}
-	return OK;
+	return beltOK;
 }
 
 char place_small_block_belt0(void)
 {
-	if (check_starting_zone(0) != OK)
+	if (check_starting_zone(0) != beltOK)
 	{
-		return FAIL;
+		return beltFAIL;
 	}
 
 	int i = 0;
@@ -98,14 +98,14 @@ char place_small_block_belt0(void)
 	{
 		belt0[i] = 0x1;
 	}
-	return OK;
+	return beltOK;
 }
 
 char place_small_block_belt1(void)
 {
-	if (check_starting_zone(1) != OK)
+	if (check_starting_zone(1) != beltOK)
 	{
-		return FAIL;
+		return beltFAIL;
 	}
 
 	int i = 0;
@@ -113,7 +113,7 @@ char place_small_block_belt1(void)
 	{
 		belt1[i] = 0x1;
 	}
-	return OK;
+	return beltOK;
 }
 
 static char check_starting_zone(char belt)
@@ -125,22 +125,22 @@ static char check_starting_zone(char belt)
 		{
 			if (belt0[i])
 			{
-				return FAIL; // Error: Block detected
+				return beltFAIL; // beltERROR: Block detected
 			}
 		}
 		else if (belt == 0x1)
 		{
 			if (belt1[i])
 			{
-				return FAIL;
+				return beltFAIL;
 			}
 		}
 		else
 		{
-			return ERROR; // Belt value not 0 or 1
+			return beltERROR; // Belt value not 0 or 1
 		}
 	}
-	return OK;
+	return beltOK;
 }
 
 void move_belt0_fwds(void)

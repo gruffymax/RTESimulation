@@ -32,9 +32,9 @@
 
 /* Calculated definitions */
 #define BELT_LENGTH_U (BELT_LENGTH_S * (1000 / STEP_LENGTH_MS) + LARGE_BLOCK_U) // Belt length in units
-#define OK 		0x0
-#define FAIL 	0x1
-#define ERROR 	0xFF
+#define beltOK 		0x0
+#define beltFAIL 	0x1
+#define beltERROR 	0xFF
 
 /* get_belt0_element
  * Returns 0x0 if the supplied element is empty

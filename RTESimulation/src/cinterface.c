@@ -28,7 +28,7 @@ char readSizeSensors(char conveyor)
 	}
 	else
 	{
-		return ERROR;
+		return beltERROR;
 	}
 }
 
@@ -45,7 +45,7 @@ char readCountSensor(char conveyor)
 	}
 	else
 	{
-		return ERROR;
+		return beltERROR;
 	}
 }
 
