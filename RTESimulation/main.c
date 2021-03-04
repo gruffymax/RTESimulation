@@ -1,11 +1,15 @@
 #include <stdio.h>
+#include <conio.h>
 #include <windows.h>
 #include "belt.h"
 #include <string.h>
 #include <process.h>
 
 int tick = 0;
+int run = 1;
 void tick_thread(void* pMyID);
+void update_display(void* pMyID);
+
 HANDLE hStdout, hScreenBuffer;
 
 int main(void)
@@ -24,15 +28,28 @@ int main(void)
     SetConsoleActiveScreenBuffer(hScreenBuffer); // Change current console buffer
 
     _beginthread(tick_thread, 0, NULL);
+    _beginthread(update_display, 0, NULL);
 
+    int key = 0;
+    while (run)
+    {
+        key = _getch();
+        if (tolower(key) == 'q')
+        {
+            run = 0;
+        }
+    }
 
 	return 0;
 }
 
 void tick_thread(void* pMyID)
 {
-    tick++;
-    Sleep(100);
+    while (run)
+    {
+        tick++;
+        Sleep(100);
+    }
 }
 
 void update_display(void* pMyID)
@@ -40,10 +57,14 @@ void update_display(void* pMyID)
     COORD pos = { 0,0 };
     static int old_tick = 0;
     char buffer[20];
-    SetConsoleCursorPosition(hScreenBuffer, pos);
-    strcpy_s(buffer, 20, "Current tick = %d", tick);
-    if (tick > old_tick)
+    while (run)
     {
-        WriteConsoleA(hScreenBuffer, buffer, strlen(buffer), NULL, NULL);
+        SetConsoleCursorPosition(hScreenBuffer, pos);
+        sprintf_s(buffer, 20, "Current tick = %d", tick);
+        if (tick > old_tick)
+        {
+            WriteConsoleA(hScreenBuffer, buffer, strlen(buffer), NULL, NULL);
+            old_tick = tick;
+        }
     }
 }
