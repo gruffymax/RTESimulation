@@ -8,7 +8,7 @@
 int tick = 0;
 int run = 1;
 void tick_thread(void* pMyID);
-void update_display(void* pMyID);
+void update_display_thread(void* pMyID);
 
 HANDLE hStdout, hScreenBuffer;
 
@@ -28,7 +28,7 @@ int main(void)
     SetConsoleActiveScreenBuffer(hScreenBuffer); // Change current console buffer
 
     _beginthread(tick_thread, 0, NULL);
-    _beginthread(update_display, 0, NULL);
+    _beginthread(update_display_thread, 0, NULL);
 
     int key = 0;
     while (run)
@@ -52,7 +52,7 @@ void tick_thread(void* pMyID)
     }
 }
 
-void update_display(void* pMyID)
+void update_display_thread(void* pMyID)
 {
     COORD pos = { 0,0 };
     static int old_tick = 0;
