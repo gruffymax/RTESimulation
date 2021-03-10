@@ -14,6 +14,7 @@ int ConveyorTwo();
 void init_screen_buffers(void);
 COORD set_cursor(int X, int Y);
 
+
 //Global variables
 int LargeBlock;
 int SmallBlock;
@@ -65,7 +66,7 @@ int main()
     }
 }
 
-int ConveyorOne()
+int ConveyorOne(void)
 {
     char text_buffer[100];
     SetConsoleActiveScreenBuffer(hConv1Buffer);
@@ -86,8 +87,25 @@ int ConveyorOne()
     //printf("No. Large blocks:  %d", LargeBlock);
     //printf("No. Small blocks:  %d", SmallBlock);
 }
+BLOCK:
+    system("cls");
+    printf("Conveyor 1:\n");
+    printf("No. Large blocks:  %d\n", LargeBlock);
+    printf("No. Small blocks:  %d\n", SmallBlock);
+    scanf_s("%d\n", &increment);
+    if (increment == 1 )
+    {
+        LargeBlock = LargeBlock++;
+        goto BLOCK;
+    }
+    else if (increment == 2)
+    {
+        SmallBlock = SmallBlock++;
+        goto BLOCK;
+    }
+}
 
-int ConveyorTwo()
+int ConveyorTwo(void)
 {
 
 }
@@ -128,31 +146,12 @@ COORD set_cursor(int X, int Y)
 
 
 
+}
 
-/*HANDLE hStdout, hNewScreenBuffer;
-hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-hNewScreenBuffer = CreateConsoleScreenBuffer(
-    GENERIC_READ |           // read/write access
-    GENERIC_WRITE,
-    FILE_SHARE_READ |
-    FILE_SHARE_WRITE,        // shared
-    NULL,                    // default security attributes
-    CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE
-    NULL);                   // reserved; must be NULL
 
-COORD pos = { 5, 2 };
 
-char buffer[50];
-strcpy_s(buffer, 50, "Hello World");
-SetConsoleCursorPosition(hNewScreenBuffer, pos);
-WriteConsoleA(hNewScreenBuffer, buffer, strlen(buffer), NULL, NULL);
 
-getch();
 
-SetConsoleActiveScreenBuffer(hNewScreenBuffer);
 
-getch();
-SetConsoleActiveScreenBuffer(hStdout);
 
-return 0;*/
