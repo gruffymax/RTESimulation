@@ -1,70 +1,133 @@
 #include <stdio.h>
-#include <conio.h>
-#include <windows.h>
-#include "belt.h"
+#include <Windows.h>
 #include <string.h>
-#include <process.h>
+#include <stdlib.h>
+#include <time.h>
+#include <windows.h>
+#include <conio.h>
+//#include "belt.h"
 
-int tick = 0;
-int run = 1;
-void tick_thread(void* pMyID);
-void update_display_thread(void* pMyID);
 
-HANDLE hStdout, hScreenBuffer;
+//prototypes
+int ConveyorOne();
+int ConveyorTwo();
+void init_screen_buffers(void);
+COORD set_cursor(int X, int Y);
 
-int main(void)
+
+//Global variables
+int LargeBlock;
+int SmallBlock;
+int increment;
+HANDLE hStdout, hMainMenuBuffer, hConv1Buffer;
+
+//main
+int main()
 {
-	
-	hStdout = GetStdHandle(STD_OUTPUT_HANDLE); // Get stdout console handle
-	hScreenBuffer = CreateConsoleScreenBuffer(
+    init_screen_buffers(); // Our function to create scfreen buffer handles etc
+    
+    int choice;
+    char text_buffer[100];
+
+    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0,0)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "Please select the option you wish to choose:"); // Create text buffer to display
+    WriteConsoleA(hMainMenuBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
+    
+    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(5,1)); // Move cursor to a new position
+    sprintf_s(text_buffer, 100, "[1] - Conveyor 1"); // Create text buffer
+    WriteConsoleA(hMainMenuBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer to new cursor position
+
+    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(5, 2));
+
+    //printf("[2] - Conveyor 2\n");
+    //printf("[3] - Shutdown\n");
+    scanf_s("%d", &choice);
+    
+
+    if (choice == 1)
+    {
+       // system("cls");
+        //printf("1");
+        ConveyorOne();
+    }
+    else if (choice == 2)
+    {
+        system("cls");
+        printf("2");
+    }
+    else if (choice == 3)
+    {
+        system("cls");
+        printf("3");
+    }
+    else
+    {
+        printf("Wrong input\n");
+        system("cls");
+    }
+}
+
+int ConveyorOne()
+{
+    char text_buffer[100];
+    SetConsoleActiveScreenBuffer(hConv1Buffer);
+
+    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 0)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "Conveyor 1:"); // Create text buffer to display
+    WriteConsoleA(hConv1Buffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
+
+    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 1)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "No. Large blocks:  %d", LargeBlock); // Create text buffer to display
+    WriteConsoleA(hConv1Buffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
+
+    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 2)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock); // Create text buffer to display
+    WriteConsoleA(hConv1Buffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
+
+    //printf("Conveyor 1:\n");
+    //printf("No. Large blocks:  %d", LargeBlock);
+    //printf("No. Small blocks:  %d", SmallBlock);
+
+
+    system("cls");
+    printf("Conveyor 1:\n");
+    printf("No. Large blocks:  %d\n", LargeBlock);
+    printf("No. Small blocks:  %d\n", SmallBlock);
+    return 0;
+}
+
+int ConveyorTwo(void)
+{
+    return 0;
+}
+
+void init_screen_buffers(void)
+{
+    hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    hMainMenuBuffer = CreateConsoleScreenBuffer(
         GENERIC_READ |           // read/write access
         GENERIC_WRITE,
         FILE_SHARE_READ |
         FILE_SHARE_WRITE,        // shared
         NULL,                    // default security attributes
         CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE
-        NULL); // Creates a new screen buffer
+        NULL);                   // reserved; must be NULL
+    
+    hConv1Buffer = CreateConsoleScreenBuffer(
+        GENERIC_READ |           // read/write access
+        GENERIC_WRITE,
+        FILE_SHARE_READ |
+        FILE_SHARE_WRITE,        // shared
+        NULL,                    // default security attributes
+        CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE
+        NULL);
+    SetConsoleActiveScreenBuffer(hMainMenuBuffer);
 
-    SetConsoleActiveScreenBuffer(hScreenBuffer); // Change current console buffer
-
-    _beginthread(tick_thread, 0, NULL);
-    _beginthread(update_display_thread, 0, NULL);
-
-    int key = 0;
-    while (run)
-    {
-        key = _getch();
-        if (tolower(key) == 'q')
-        {
-            run = 0;
-        }
-    }
-
-	return 0;
 }
 
-void tick_thread(void* pMyID)
+COORD set_cursor(int X, int Y)
 {
-    while (run)
-    {
-        tick++;
-        Sleep(100);
-    }
-}
-
-void update_display_thread(void* pMyID)
-{
-    COORD pos = { 0,0 };
-    static int old_tick = 0;
-    char buffer[20];
-    while (run)
-    {
-        SetConsoleCursorPosition(hScreenBuffer, pos);
-        sprintf_s(buffer, 20, "Current tick = %d", tick);
-        if (tick > old_tick)
-        {
-            WriteConsoleA(hScreenBuffer, buffer, strlen(buffer), NULL, NULL);
-            old_tick = tick;
-        }
-    }
+    COORD pos = { X, Y };
+    return pos;
 }
