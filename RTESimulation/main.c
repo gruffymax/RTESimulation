@@ -1,106 +1,62 @@
 #include <stdio.h>
-#include <Windows.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 #include <windows.h>
 #include <conio.h>
-//#include "belt.h"
+#include <process.h>
+#include "cinterface.h"
+#include "belt.h"
 
 
 //prototypes
-int ConveyorOne();
-int ConveyorTwo();
 void init_screen_buffers(void);
 COORD set_cursor(int X, int Y);
+void update_screen(void);
+// Thread prototypes
+void thread_tick(void);
 
 
 //Global variables
-int LargeBlock;
-int SmallBlock;
-int increment;
+extern uint32_t ticks; //Define ticks as a global variable
+uint32_t ticks = 0; // Declare ticks and initialise
+
 HANDLE hStdout, hMainMenuBuffer, hConv1Buffer;
 
 //main
 int main()
 {
+    _beginthread(thread_tick, 4, NULL);
+
     init_screen_buffers(); // Our function to create scfreen buffer handles etc
-    
-    int choice;
+
     char text_buffer[100];
 
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0,0)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0, 0)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "Please select the option you wish to choose:"); // Create text buffer to display
     WriteConsoleA(hMainMenuBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
-    
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(5,1)); // Move cursor to a new position
+
+    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(5, 1)); // Move cursor to a new position
     sprintf_s(text_buffer, 100, "[1] - Conveyor 1"); // Create text buffer
     WriteConsoleA(hMainMenuBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer to new cursor position
 
     SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(5, 2));
+    CONSOLE_CURSOR_INFO cursor_info = { 1, 0 };
+    SetConsoleCursorInfo(hMainMenuBuffer, &cursor_info); // Turn off the visible cursor
 
-    //printf("[2] - Conveyor 2\n");
-    //printf("[3] - Shutdown\n");
-    scanf_s("%d", &choice);
-    
+    place_large_block_belt0();
 
-    if (choice == 1)
+    uint32_t old_tick = 0;
+    while (1)
     {
-       // system("cls");
-        //printf("1");
-        ConveyorOne();
-    }
-    else if (choice == 2)
-    {
-        system("cls");
-        printf("2");
-    }
-    else if (choice == 3)
-    {
-        system("cls");
-        printf("3");
-    }
-    else
-    {
-        printf("Wrong input\n");
-        system("cls");
+        if (ticks > old_tick)
+        {
+            move_belt0_fwds();
+            update_screen();
+            old_tick = ticks;
+        }
     }
 }
-
-int ConveyorOne()
-{
-    char text_buffer[100];
-    SetConsoleActiveScreenBuffer(hConv1Buffer);
-
-    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 0)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "Conveyor 1:"); // Create text buffer to display
-    WriteConsoleA(hConv1Buffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
-
-    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 1)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "No. Large blocks:  %d", LargeBlock); // Create text buffer to display
-    WriteConsoleA(hConv1Buffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
-
-    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 2)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock); // Create text buffer to display
-    WriteConsoleA(hConv1Buffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
-
-    //printf("Conveyor 1:\n");
-    //printf("No. Large blocks:  %d", LargeBlock);
-    //printf("No. Small blocks:  %d", SmallBlock);
-
-
-    system("cls");
-    printf("Conveyor 1:\n");
-    printf("No. Large blocks:  %d\n", LargeBlock);
-    printf("No. Small blocks:  %d\n", SmallBlock);
-    return 0;
-}
-
-int ConveyorTwo(void)
-{
-    return 0;
-}
-
 void init_screen_buffers(void)
 {
     hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -130,4 +86,25 @@ COORD set_cursor(int X, int Y)
 {
     COORD pos = { X, Y };
     return pos;
+}
+
+void thread_tick(void)
+{
+    while (1)
+    {
+        ticks++;
+        Sleep(100);
+    }
+}
+
+void update_screen(void)
+{
+    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0, 5)); // Move cursor to Top-Left corner of buffer
+    char text_buffer[100];
+    int i = 0;
+    for (i = 0; i < BELT_LENGTH_U; i++)
+    {
+        sprintf_s(text_buffer, 100, "%d", get_belt0_element(i));
+        WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL);
+    }
 }
