@@ -18,6 +18,7 @@ COORD set_cursor(int X, int Y);
 //Global variables
 int LargeBlock;
 int SmallBlock;
+int increment;
 HANDLE hStdout, hMainMenuBuffer, hConv1Buffer;
 
 //main
@@ -71,23 +72,23 @@ int ConveyorOne(void)
     char text_buffer[100];
     SetConsoleActiveScreenBuffer(hConv1Buffer);
 
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0, 0)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 0)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "Conveyor 1:"); // Create text buffer to display
-    WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
+    WriteConsoleA(hConv1Buffer, text_buffer, strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
 
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0, 1)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 1)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "No. Large blocks:  %d", LargeBlock); // Create text buffer to display
-    WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
+    WriteConsoleA(hConv1Buffer, text_buffer, strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
 
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0, 2)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 2)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock); // Create text buffer to display
-    WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
+    WriteConsoleA(hConv1Buffer, text_buffer, strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
 
     //printf("Conveyor 1:\n");
     //printf("No. Large blocks:  %d", LargeBlock);
     //printf("No. Small blocks:  %d", SmallBlock);
-}
-BLOCK:
+
+
     system("cls");
     printf("Conveyor 1:\n");
     printf("No. Large blocks:  %d\n", LargeBlock);
@@ -96,18 +97,18 @@ BLOCK:
     if (increment == 1 )
     {
         LargeBlock = LargeBlock++;
-        goto BLOCK;
+      
     }
     else if (increment == 2)
     {
         SmallBlock = SmallBlock++;
-        goto BLOCK;
+        
     }
 }
 
 int ConveyorTwo(void)
 {
-
+    
 }
 
 void init_screen_buffers(void)
@@ -140,18 +141,3 @@ COORD set_cursor(int X, int Y)
     COORD pos = { X, Y };
     return pos;
 }
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
