@@ -5,6 +5,7 @@
 #include <time.h>
 #include <windows.h>
 #include <conio.h>
+
 //#include "belt.h"
 
 
@@ -19,6 +20,7 @@ COORD set_cursor(int X, int Y);
 int LargeBlock;
 int SmallBlock;
 int increment;
+int choice;
 HANDLE hStdout, hMainMenuBuffer, hConv1Buffer;
 
 //main
@@ -26,7 +28,6 @@ int main()
 {
     init_screen_buffers(); // Our function to create scfreen buffer handles etc
     
-    int choice;
     char text_buffer[100];
 
     SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0,0)); // Move cursor to Top-Left corner of buffer
@@ -47,7 +48,7 @@ int main()
     if (choice == 1)
     {
        // system("cls");
-        //printf("1");
+       //printf("1");
         ConveyorOne();
     }
     else if (choice == 2)
@@ -84,16 +85,35 @@ int ConveyorOne()
     sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock); // Create text buffer to display
     WriteConsoleA(hConv1Buffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
 
+    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 5)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "Option menu:"); // Create text buffer to display
+    WriteConsoleA(hConv1Buffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
+    SetConsoleCursorPosition(hConv1Buffer, set_cursor(0, 6)); // Move cursor to Top-Left corner of buffer
+    scanf_s("%d", &choice);
+    if (choice == 1)
+    {
+
+    }
+    else if (choice == 2)
+    {
+        
+    }
+
+
+    _getch(); //Grabs character and returns
+
+
+
     //printf("Conveyor 1:\n");
     //printf("No. Large blocks:  %d", LargeBlock);
     //printf("No. Small blocks:  %d", SmallBlock);
 
 
-    system("cls");
-    printf("Conveyor 1:\n");
-    printf("No. Large blocks:  %d\n", LargeBlock);
-    printf("No. Small blocks:  %d\n", SmallBlock);
-    return 0;
+   // system("cls");
+   //printf("Conveyor 1:\n");
+   // printf("No. Large blocks:  %d\n", LargeBlock);
+   // printf("No. Small blocks:  %d\n", SmallBlock);
+   // return 0;
 }
 
 int ConveyorTwo(void)
