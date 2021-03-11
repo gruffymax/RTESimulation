@@ -13,6 +13,7 @@
 void init_screen_buffers(void);
 COORD set_cursor(int X, int Y);
 void update_screen(void);
+
 // Thread prototypes
 void thread_tick(void);
 
@@ -108,3 +109,12 @@ void update_screen(void)
         WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL);
     }
 }
+
+/* 11111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000>
+ *           ^                   ^         ^                                       ^                   ^
+ *                               S         S                                                            
+ *                               1         2                                       G                   C
+ * 
+ *           v                   v         v                                       v                   v
+ * 00000111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000>
+ */
