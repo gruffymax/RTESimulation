@@ -30,6 +30,9 @@
     <ClCompile Include="src\motor.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\simulation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\belt.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\motor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\simulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,12 +1,13 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <Windows.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
 #include <conio.h>
-
-//#include "belt.h"
+#include <process.h>
+#include "simulation.h"
 
 
 //prototypes
@@ -14,9 +15,14 @@ int ConveyorOne();
 int ConveyorTwo();
 void init_screen_buffers(void);
 COORD set_cursor(int X, int Y);
+void update_display(void);
 
 
 //Global variables
+extern uint32_t ticks;
+extern int simulation_run;
+
+int simulation_run = 1;
 int LargeBlock;
 int SmallBlock;
 int increment;
@@ -26,8 +32,16 @@ HANDLE hStdout, hMainMenuBuffer, hConv1Buffer;
 //main
 int main()
 {
+    /* Initialistion */
     init_screen_buffers(); // Our function to create scfreen buffer handles etc
-    
+    _beginthread(thread_tick, 4, NULL); //Start the simulation ticker running
+    _beginthread(thread_simulation, 16, NULL);
+
+    while (simulation_run)
+    {
+        update_display();
+    }
+    int choice;
     char text_buffer[100];
 
     SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0,0)); // Move cursor to Top-Left corner of buffer
@@ -151,3 +165,32 @@ COORD set_cursor(int X, int Y)
     COORD pos = { X, Y };
     return pos;
 }
+
+void update_display(void)
+{
+    uint32_t old_tick = 0;
+    char text_buffer[100];
+    int i = 0;
+    if (ticks > old_tick)
+    {
+        for (i = 0; i < BELT_LENGTH_U; i++)
+        {
+            sprintf_s(text_buffer, 100, "%d", sim_get_belt0(i));
+            SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(i, 0));
+            WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL);
+            sprintf_s(text_buffer, 100, "%d", sim_get_belt1(i));
+            SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(i, 5));
+            WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL);
+        }
+    }
+    old_tick = ticks;
+}
+
+/* 11111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000>
+ *           ^                   ^         ^                                       ^                   ^
+ *                               S         S
+ *                               1         2                                       G                   C
+ *
+ *           v                   v         v                                       v                   v
+ * 00000111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000>
+ */
