@@ -38,7 +38,7 @@ int main()
 {
     init_screen_buffers();
     do {
-        //system("cls");
+        system("cls");
         SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0, 0)); // Move cursor to Top-Left corner of buffer
         sprintf_s(text_buffer, 100, "Please select the option you wish to choose:"); // Create text buffer to display
         WriteConsoleA(hMainMenuBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
@@ -60,14 +60,13 @@ int main()
 
         if (choice == 1)
         {
-            //system("cls");
-            //printf("1");
-            ConveyorOne();
+            system("cls");
+            return ConveyorOne();
         }
         else if (choice == 2)
         {
-            //system("cls");
-            ConveyorTwo();
+            system("cls");
+            return ConveyorTwo();
         }
         else if (choice == 3)
         {
@@ -122,19 +121,6 @@ int ConveyorOne()
     {
         return 0;
     }
-    
-   
-
-
-        //printf("Conveyor 1:\n");
-        //printf("No. Large blocks:  %d", LargeBlock);
-        //printf("No. Small blocks:  %d", SmallBlock);
-
-
-       // system("cls");
-       //printf("Conveyor 1:\n");
-       // printf("No. Large blocks:  %d\n", LargeBlock);
-       // printf("No. Small blocks:  %d\n", SmallBlock);
         return 0;
 }
 
@@ -240,7 +226,10 @@ COORD set_cursor(int X, int Y)
 
 
 
+int endDisplay()
+{
 
+}
 
 /*void update_display(void)
 {
