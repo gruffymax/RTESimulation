@@ -1,62 +1,66 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <Windows.h>
 #include <string.h>
 #include <stdlib.h>
 #include <windows.h>
 #include <conio.h>
 #include <process.h>
-#include "cinterface.h"
-#include "belt.h"
+#include "simulation.h"
 
 
 //prototypes
 void init_screen_buffers(void);
 COORD set_cursor(int X, int Y);
-void update_screen(void);
+void update_display(void);
 
 // Thread prototypes
 void thread_tick(void);
 
 
 //Global variables
-extern uint32_t ticks; //Define ticks as a global variable
-uint32_t ticks = 0; // Declare ticks and initialise
+extern uint32_t ticks;
+extern int simulation_run;
 
-HANDLE hStdout, hMainMenuBuffer, hConv1Buffer;
+int simulation_run = 1;
+HANDLE hStdout, hMainMenuBuffer, hConv1Buffer, hStdin = NULL;
 
 //main
 int main()
 {
-    _beginthread(thread_tick, 4, NULL);
-
-    init_screen_buffers(); // Our function to create scfreen buffer handles etc
-
-    char text_buffer[100];
-
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0, 0)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "Please select the option you wish to choose:"); // Create text buffer to display
-    WriteConsoleA(hMainMenuBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
-
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(5, 1)); // Move cursor to a new position
-    sprintf_s(text_buffer, 100, "[1] - Conveyor 1"); // Create text buffer
-    WriteConsoleA(hMainMenuBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer to new cursor position
-
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(5, 2));
-    CONSOLE_CURSOR_INFO cursor_info = { 1, 0 };
-    SetConsoleCursorInfo(hMainMenuBuffer, &cursor_info); // Turn off the visible cursor
-
-    place_large_block_belt0();
+    /* Initialistion */
+    init_screen_buffers(); // Our function to create screen buffer handles etc
+    _beginthread(thread_tick, 4, NULL); //Start the simulation ticker running
+    _beginthread(thread_simulation, 16, NULL); //Start the simulation thread
+    hStdin = GetStdHandle(STD_INPUT_HANDLE);
 
     uint32_t old_tick = 0;
-    while (1)
+    char key_press[16];
+    int chars_out = 0;
+    BOOL res = 0;
+
+    while (simulation_run)
     {
         if (ticks > old_tick)
         {
-            move_belt0_fwds();
-            update_screen();
+            update_display();
+            // TODO
+            res = ReadConsole(hMainMenuBuffer, key_press, 4, &chars_out, NULL);
+            if (res)
+            {
+                while (1);
+            }
+            if (key_press[0] == tolower('q'))
+            {
+                simulation_run = 0;
+            }
             old_tick = ticks;
+            Sleep(99);
         }
     }
+
+    SetConsoleActiveScreenBuffer(hStdout);
+    printf("Simulation exited. Goodbye\n\r");
 }
 void init_screen_buffers(void)
 {
@@ -80,6 +84,8 @@ void init_screen_buffers(void)
         CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE
         NULL);
     SetConsoleActiveScreenBuffer(hMainMenuBuffer);
+    CONSOLE_CURSOR_INFO cursor_info = { 1, 0 };
+    SetConsoleCursorInfo(hMainMenuBuffer, &cursor_info);
 
 }
 
@@ -89,32 +95,28 @@ COORD set_cursor(int X, int Y)
     return pos;
 }
 
-void thread_tick(void)
+void update_display(void)
 {
-    while (1)
-    {
-        ticks++;
-        Sleep(100);
-    }
-}
-
-void update_screen(void)
-{
-    SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(0, 5)); // Move cursor to Top-Left corner of buffer
     char text_buffer[100];
-    int i = 0;
-    for (i = 0; i < BELT_LENGTH_U; i++)
+    int i;
     {
-        sprintf_s(text_buffer, 100, "%d", get_belt0_element(i));
-        WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL);
+        for (i = 0; i < BELT_LENGTH_U; i++)
+        {
+            sprintf_s(text_buffer, 100, "%d", sim_get_belt0(i));
+            SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(i, 0));
+            WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL);
+            sprintf_s(text_buffer, 100, "%d", sim_get_belt1(i));
+            SetConsoleCursorPosition(hMainMenuBuffer, set_cursor(i, 5));
+            WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL);
+        }
     }
 }
 
 /* 11111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000>
  *           ^                   ^         ^                                       ^                   ^
- *                               S         S                                                            
+ *                               S         S
  *                               1         2                                       G                   C
- * 
+ *
  *           v                   v         v                                       v                   v
  * 00000111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000>
  */

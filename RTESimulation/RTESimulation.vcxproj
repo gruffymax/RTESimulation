@@ -147,12 +147,14 @@
     <ClCompile Include="src\cinterface.c" />
     <ClCompile Include="src\gates.c" />
     <ClCompile Include="src\motor.c" />
+    <ClCompile Include="src\simulation.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\belt.h" />
     <ClInclude Include="inc\cinterface.h" />
     <ClInclude Include="inc\gates.h" />
     <ClInclude Include="inc\motor.h" />
+    <ClInclude Include="inc\simulation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
