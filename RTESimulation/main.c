@@ -34,14 +34,16 @@ int main()
     _beginthread(thread_simulation, 16, NULL); //Start the simulation thread
     hStdin = GetStdHandle(STD_INPUT_HANDLE);
 
+
+
     uint32_t old_tick = 0;
     char key_press[16];
     int chars_out = 0;
-    INPUT_RECORD irInBuff[128];
+    INPUT_RECORD irInBuff;
     DWORD fdwMode;
     BOOL res = 0;
 
-    fdwMode = ENABLE_WINDOW_INPUT;
+    fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT;
     res = SetConsoleMode(hStdin, fdwMode);
     
     while (simulation_run)
@@ -50,11 +52,11 @@ int main()
         {
             update_display();
             // TODO
-            res = ReadConsole(hStdin, irInBuff, 128, &chars_out, NULL);
+            res = ReadConsoleInput(hStdin, &irInBuff, 1, &chars_out, NULL);
             
-            if (irInBuff[0].EventType == KEY_EVENT)
+            if (irInBuff.EventType == KEY_EVENT)
             {
-                if (irInBuff[0].Event.KeyEvent.uChar.AsciiChar == 'q')
+                if (irInBuff.Event.KeyEvent.uChar.AsciiChar == 'q')
                 {
                     simulation_run = 0;
                 }
