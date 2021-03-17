@@ -37,22 +37,27 @@ int main()
     uint32_t old_tick = 0;
     char key_press[16];
     int chars_out = 0;
+    INPUT_RECORD irInBuff[128];
+    DWORD fdwMode;
     BOOL res = 0;
 
+    fdwMode = ENABLE_WINDOW_INPUT;
+    res = SetConsoleMode(hStdin, fdwMode);
+    
     while (simulation_run)
     {
         if (ticks > old_tick)
         {
             update_display();
             // TODO
-            res = ReadConsole(hMainMenuBuffer, key_press, 4, &chars_out, NULL);
-            if (res)
+            res = ReadConsole(hStdin, irInBuff, 128, &chars_out, NULL);
+            
+            if (irInBuff[0].EventType == KEY_EVENT)
             {
-                while (1);
-            }
-            if (key_press[0] == tolower('q'))
-            {
-                simulation_run = 0;
+                if (irInBuff[0].Event.KeyEvent.uChar.AsciiChar == 'q')
+                {
+                    simulation_run = 0;
+                }
             }
             old_tick = ticks;
             Sleep(99);
