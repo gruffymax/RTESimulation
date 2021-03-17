@@ -43,7 +43,7 @@ int main()
     DWORD fdwMode;
     BOOL res = 0;
 
-    fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT;
+    fdwMode = ENABLE_WINDOW_INPUT;
     res = SetConsoleMode(hStdin, fdwMode);
     
     while (simulation_run)
@@ -52,13 +52,17 @@ int main()
         {
             update_display();
             // TODO
-            res = ReadConsoleInput(hStdin, &irInBuff, 1, &chars_out, NULL);
-            
-            if (irInBuff.EventType == KEY_EVENT)
+            GetNumberOfConsoleInputEvents(hStdin, &chars_out);
+            if (chars_out != 0)
             {
-                if (irInBuff.Event.KeyEvent.uChar.AsciiChar == 'q')
+                res = ReadConsoleInput(hStdin, &irInBuff, 1, &chars_out, NULL);
+
+                if (irInBuff.EventType == KEY_EVENT)
                 {
-                    simulation_run = 0;
+                    if (irInBuff.Event.KeyEvent.uChar.AsciiChar == 'q')
+                    {
+                        simulation_run = 0;
+                    }
                 }
             }
             old_tick = ticks;
