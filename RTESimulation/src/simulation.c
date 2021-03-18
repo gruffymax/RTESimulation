@@ -2,14 +2,19 @@
 
 uint32_t ticks = 0;
 int simulation_run;
+int simulation_pause;
 
 void thread_tick(void)
 {
 	while (simulation_run)
 	{
-		ticks++;
+		if (simulation_pause == 0)
+		{
+			ticks++;
+		}
 		Sleep(100);
 	}
+	
 }
 
 void thread_simulation(void)
@@ -29,11 +34,10 @@ void thread_simulation(void)
 				move_belt0_fwds();
 				move_belt1_fwds();
 			}
-			old_tick = ticks;
-			Sleep(99);
+			old_tick = ticks;	
 		}
-		
 	}
+	Sleep(100);
 }
 
 char sim_get_belt0(uint16_t element)

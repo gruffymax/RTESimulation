@@ -13,6 +13,8 @@
 void init_screen_buffers(void);
 COORD set_cursor(int X, int Y);
 void update_display(void);
+char grab_key_presses(void);
+BOOL update_system_state(char key_press);
 
 // Thread prototypes
 void thread_tick(void);
@@ -21,53 +23,35 @@ void thread_tick(void);
 //Global variables
 extern uint32_t ticks;
 extern int simulation_run;
+extern int simulation_pause;
 
 int simulation_run = 1;
+int simulation_pause = 0;
+
 HANDLE hStdout, hMainMenuBuffer, hConv1Buffer, hStdin = NULL;
 
 //main
 int main()
 {
+    uint32_t old_tick = 0;
+
     /* Initialistion */
     init_screen_buffers(); // Our function to create screen buffer handles etc
+    /* Start Threads */
     _beginthread(thread_tick, 4, NULL); //Start the simulation ticker running
     _beginthread(thread_simulation, 16, NULL); //Start the simulation thread
-    hStdin = GetStdHandle(STD_INPUT_HANDLE);
-
-
-
-    uint32_t old_tick = 0;
-    char key_press[16];
-    int chars_out = 0;
-    INPUT_RECORD irInBuff;
-    DWORD fdwMode;
-    BOOL res = 0;
-
-    fdwMode = ENABLE_WINDOW_INPUT;
-    res = SetConsoleMode(hStdin, fdwMode);
     
     while (simulation_run)
     {
         if (ticks > old_tick)
         {
             update_display();
-            // TODO
-            GetNumberOfConsoleInputEvents(hStdin, &chars_out);
-            if (chars_out != 0)
-            {
-                res = ReadConsoleInput(hStdin, &irInBuff, 1, &chars_out, NULL);
 
-                if (irInBuff.EventType == KEY_EVENT)
-                {
-                    if (irInBuff.Event.KeyEvent.uChar.AsciiChar == 'q')
-                    {
-                        simulation_run = 0;
-                    }
-                }
-            }
             old_tick = ticks;
-            Sleep(99);
+            
         }
+        update_system_state(grab_key_presses());
+        Sleep(100);
     }
 
     SetConsoleActiveScreenBuffer(hStdout);
@@ -75,8 +59,13 @@ int main()
 }
 void init_screen_buffers(void)
 {
+    hStdin = GetStdHandle(STD_INPUT_HANDLE);
     hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD fdwMode = ENABLE_WINDOW_INPUT;
+    BOOL res = 0;
 
+    res = SetConsoleMode(hStdin, fdwMode); //Configure StdIn to accept keypresses only
+    
     hMainMenuBuffer = CreateConsoleScreenBuffer(
         GENERIC_READ |           // read/write access
         GENERIC_WRITE,
@@ -121,6 +110,53 @@ void update_display(void)
             WriteConsoleA(hMainMenuBuffer, text_buffer, strlen(text_buffer), NULL, NULL);
         }
     }
+}
+
+char grab_key_presses(void)
+{
+    BOOL res = 0;
+    int chars_out = 0;
+    INPUT_RECORD irInBuff[100];
+
+    GetNumberOfConsoleInputEvents(hStdin, &chars_out);
+    if (chars_out != 0)
+    {
+        res = ReadConsoleInput(hStdin, irInBuff, 100, &chars_out, NULL);
+
+        for (int i = 0; i < chars_out; i++)
+        {
+            if (irInBuff[i].EventType == KEY_EVENT && irInBuff[i].Event.KeyEvent.bKeyDown == 1)
+            {
+                return irInBuff[i].Event.KeyEvent.uChar.AsciiChar;
+            }
+        }
+    }
+    return 0;
+}
+
+BOOL update_system_state(char key_press)
+{
+    switch (key_press)
+    {
+        case 'q':
+            simulation_run = 0;
+            break;
+
+        case 'p':
+            if (simulation_pause == 0)
+            {
+                simulation_pause = 1;
+            }
+            else
+            {
+                simulation_pause = 0;
+            }
+            break;
+
+        default:
+            break;
+    }
+    return 1;
 }
 
 /* 11111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000>
