@@ -38,7 +38,9 @@ int choice;
 char text_buffer[200];
 char Stopchoice[50];
 HANDLE hStdout, hSimulationBuffer, hSimulationBuffer, hSimulationBuffer, hStdin = NULL;
-
+CONSOLE_SCREEN_BUFFER_INFO bufferinfo;  //added 22/03/21
+DWORD cCharsWritten, dwConSize;         //added 22/03/21
+COORD coordScreen = {0,0};              //added 22/03/21
 
 //main
 int main()
@@ -65,11 +67,20 @@ int main()
         if (ticks > old_tick)
         {
             update_display();
-            get_key_press();
+            get_key_press();    
+            GetConsoleScreenBufferInfo(hStdout, &bufferinfo);   //-----ADDED 22/03/21----- attempt to add blank spaces
+            dwConSize = bufferinfo.dwSize.X * bufferinfo.dwSize.Y;
+            if (!FillConsoleOutputCharacter(hStdout,            // Handle to console screen buffer
+                (TCHAR)' ',                                     // Character to write to the buffer
+                dwConSize,                                      // Number of cells to write
+                coordScreen,                                    // Coordinates of first cell
+                &cCharsWritten))                                // Receive number of characters written 
+            
+
             
             old_tick = ticks;
             Sleep(100);
-        }
+         }
 
         
         /*SetConsoleCursorPosition(hSimulationBuffer, set_cursor(0, 6)); // Move cursor to Top-Left corner of buffer
@@ -135,7 +146,7 @@ int main()
 }
 void mainmenu(void)
 {
-    //system("cls");
+    system("cls");
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(0, 7)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "Please select the option you wish to choose:"); // Create text buffer to display
     WriteConsoleA(hSimulationBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
@@ -149,7 +160,7 @@ void mainmenu(void)
     WriteConsoleA(hSimulationBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer to new cursor position
 
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(5, 10)); // Move cursor to a new position
-    sprintf_s(text_buffer, 100, "[3] - Exit"); // Create text buffer
+    sprintf_s(text_buffer, 100, "[0] - Exit"); // Create text buffer
     WriteConsoleA(hSimulationBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer to new cursor position
 
 
@@ -157,7 +168,7 @@ void mainmenu(void)
 }
 void ConveyorOne(void)
 {
-    //system("cls");
+    system("cls");
     SetConsoleActiveScreenBuffer(hSimulationBuffer);
 
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(0, 7)); // Move cursor to Top-Left corner of buffer
@@ -185,7 +196,7 @@ void ConveyorOne(void)
     WriteConsoleA(hSimulationBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(0, 13));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[3] - Stop Simulation");                                    // Create text buffer to display
+    sprintf_s(text_buffer, 100, "[0] - Stop Simulation");                                    // Create text buffer to display
     WriteConsoleA(hSimulationBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(0, 14));                           // Move cursor to Top-Left corner of buffer
@@ -193,7 +204,7 @@ void ConveyorOne(void)
 
 void ConveyorTwo(void)
 {
-    //system("cls");
+    system("cls");
     SetConsoleActiveScreenBuffer(hSimulationBuffer);
 
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(0, 7));                           // Move cursor to Top-Left corner of buffer
@@ -221,7 +232,7 @@ void ConveyorTwo(void)
     WriteConsoleA(hSimulationBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(0, 13));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[3] - Stop Simulation");                                    // Create text buffer to display
+    sprintf_s(text_buffer, 100, "[0] - Stop Simulation");                                    // Create text buffer to display
     WriteConsoleA(hSimulationBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(0, 14));                           // Move cursor to Top-Left corner of buffer
