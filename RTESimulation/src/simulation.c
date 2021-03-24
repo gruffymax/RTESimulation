@@ -1,8 +1,8 @@
 #include "simulation.h"
 
 uint32_t ticks = 0;
-int simulation_run;
-int simulation_pause;
+extern int simulation_run;
+extern int simulation_pause;
 
 void thread_tick(void)
 {
@@ -19,18 +19,23 @@ void thread_tick(void)
 
 void thread_simulation(void)
 {
+	static uint32_t old_tick = 0;
 	/* TESTING block placed here*/
 	place_large_block_belt0();
 	place_small_block_belt1();
 
 	while (simulation_run)
 	{
-		if (get_motor_state)
+		if (ticks > old_tick)
 		{
-			move_belt0_fwds();
-			move_belt1_fwds();
+			if (get_motor_state)
+			{
+				move_belt0_fwds();
+				move_belt1_fwds();
+			}
+			old_tick = ticks;
 		}
-		Sleep(100);
+		Sleep(20);
 	}
 }
 

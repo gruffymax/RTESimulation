@@ -53,7 +53,7 @@ int main()
     {
         update_display();
         get_key_press();
-        Sleep(100);
+        Sleep(20);
     }
 }
 void mainmenu(void)
@@ -71,9 +71,8 @@ void mainmenu(void)
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer to new cursor position
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(5, 10)); // Move cursor to a new position
-    sprintf_s(text_buffer, 100, "[0] - Exit"); // Create text buffer
+    sprintf_s(text_buffer, 100, "[0] - Main Menu"); // Create text buffer
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer to new cursor position
-
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(5, 11));
 }
@@ -96,7 +95,7 @@ void ConveyorOne(void)
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);    // Put text buffer onto screen at the cursor position.
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 11));                            // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[1] - Main Menu");                                      // Create text buffer to display
+    sprintf_s(text_buffer, 100, "[0] - Main Menu");                                      // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 12));                           // Move cursor to Top-Left corner of buffer
@@ -104,7 +103,7 @@ void ConveyorOne(void)
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 13));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[0] - Stop Simulation");                                    // Create text buffer to display
+    sprintf_s(text_buffer, 100, "[q] - Stop Simulation");                                    // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 14));                           // Move cursor to Top-Left corner of buffer
@@ -129,15 +128,15 @@ void ConveyorTwo(void)
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);   // Put text buffer onto screen at the cursor position.
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 11));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[1] - Main Menu");                                     // Create text buffer to display
+    sprintf_s(text_buffer, 100, "[0] - Main Menu");                                     // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 12));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[2] - Conveyor 1");                                    // Create text buffer to display
+    sprintf_s(text_buffer, 100, "[1] - Conveyor 1");                                    // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 13));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[0] - Stop Simulation");                                    // Create text buffer to display
+    sprintf_s(text_buffer, 100, "[q] - Stop Simulation");                                    // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 14));                           // Move cursor to Top-Left corner of buffer
@@ -168,7 +167,14 @@ void get_key_press(void)
                 page = 0;
                 break;
             case 'p':
-                simulation_pause = 1;
+                if (simulation_pause)
+                {
+                    simulation_pause = 0;
+                }
+                else
+                {
+                    simulation_pause = 1;
+                }
                 break;
             case 'q':
                 simulation_run = 0;
@@ -245,6 +251,8 @@ void update_display(void)
     CHAR_INFO *chiBuffer = malloc(display_size);
     COORD coordBufsize = { bufferinfo.dwSize.X, bufferinfo.dwSize.Y };
     COORD coordBufCoord = { 0, 0 };
+    char update_buffer[110] = { 0 };
+    int i = 0;
 
     clear_display(hBackgroundBuffer);
     switch (page)
@@ -260,6 +268,17 @@ void update_display(void)
             break;
         default:
             break;
+    }
+    
+    for (i = 0; i < BELT_LENGTH_U; i++)
+    {
+        sprintf_s(update_buffer, 100, "%d", sim_get_belt0(i));
+        SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 4, 0));
+        WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
+
+        sprintf_s(update_buffer, 100, "%d", sim_get_belt1(i));
+        SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 4, 5));
+        WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
     }
 
     ReadConsoleOutput(hBackgroundBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect); //Copy background screen buffer
