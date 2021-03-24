@@ -19,25 +19,19 @@ void thread_tick(void)
 
 void thread_simulation(void)
 {
-	uint32_t old_tick = 0;
-
 	/* TESTING block placed here*/
 	place_large_block_belt0();
 	place_small_block_belt1();
 
 	while (simulation_run)
 	{
-		if (ticks > old_tick)
+		if (get_motor_state)
 		{
-			if (get_motor_state)
-			{
-				move_belt0_fwds();
-				move_belt1_fwds();
-			}
-			old_tick = ticks;	
+			move_belt0_fwds();
+			move_belt1_fwds();
 		}
+		Sleep(100);
 	}
-	Sleep(100);
 }
 
 char sim_get_belt0(uint16_t element)

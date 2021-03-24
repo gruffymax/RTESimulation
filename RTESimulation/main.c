@@ -17,6 +17,7 @@ void init_screen_buffers(void);
 void get_key_press(void);
 void update_display(void);
 void clear_display(HANDLE hbuffer);
+COORD set_cursor(int X, int Y);
 
 //Thread Prototypes
 void thread_tick(void);
@@ -24,13 +25,11 @@ void thread_tick(void);
 //Global Variables
 extern uint32_t ticks;
 extern int simulation_run;
+extern int simulation_pause;
 
 //Variables
-COORD set_cursor(int X, int Y);
-DWORD fdwMode;
-BOOL res = 0;
-
 int simulation_run = 1;
+int simulation_pause = 0;
 int LargeBlock;
 int SmallBlock;
 int increment;
@@ -48,27 +47,13 @@ int main()
     init_screen_buffers(); // Our function to create screen buffer handles etc
     _beginthread(thread_tick, 4, NULL); //Start the simulation ticker running
     _beginthread(thread_simulation, 16, NULL); //Start the simulation thread
-    hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    hStdin = GetStdHandle(STD_INPUT_HANDLE); // Get the stdin handle so we can get key presses
 
-    uint32_t old_tick = 0;
-    INPUT_RECORD irInBuff;
-
-    DWORD fdwMode;
-    BOOL res = 0;
-
-    fdwMode = ENABLE_WINDOW_INPUT;
-    res = SetConsoleMode(hStdin, fdwMode);
-
-    while (1)
+    while (simulation_run)
     {
-        if (ticks > old_tick)
-        {
-            update_display();
-            get_key_press();
-
-            old_tick = ticks;
-            Sleep(100);
-        }
+        update_display();
+        get_key_press();
+        Sleep(100);
     }
 }
 void mainmenu(void)
@@ -94,8 +79,6 @@ void mainmenu(void)
 }
 void ConveyorOne(void)
 {
-    SetConsoleActiveScreenBuffer(hBackgroundBuffer);
-
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 7)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "Conveyor 1:"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
@@ -129,8 +112,6 @@ void ConveyorOne(void)
 
 void ConveyorTwo(void)
 {
-    SetConsoleActiveScreenBuffer(hBackgroundBuffer);
-
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 7));                           // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "Conveyor 2:");                                         // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);   // Put text buffer onto screen at the cursor position.
@@ -164,6 +145,7 @@ void ConveyorTwo(void)
 
 void get_key_press(void)
 {
+    BOOL res;
     INPUT_RECORD irInBuff;
     int chars_out = 0;
 
@@ -185,6 +167,12 @@ void get_key_press(void)
             case '0':
                 page = 0;
                 break;
+            case 'p':
+                simulation_pause = 1;
+                break;
+            case 'q':
+                simulation_run = 0;
+                break;
             default:
                 break;
             }
@@ -193,7 +181,10 @@ void get_key_press(void)
 }
 void init_screen_buffers(void)
 {
+    BOOL res = 0;
     hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD fdwMode = ENABLE_WINDOW_INPUT;
+    res = SetConsoleMode(hStdin, fdwMode);
 
     hBackgroundBuffer = CreateConsoleScreenBuffer(
         GENERIC_READ |           // read/write access
@@ -246,34 +237,18 @@ COORD set_cursor(int X, int Y)
 
 void update_display(void)
 {
-    uint32_t old_tick = 0;
-
+    /* Variables */
     CONSOLE_SCREEN_BUFFER_INFO bufferinfo;
     GetConsoleScreenBufferInfo(hDisplayBuffer, &bufferinfo);
-
-    SMALL_RECT srcRect;
-    srcRect.Top = 0;
-    srcRect.Left = 0;
-    srcRect.Bottom = bufferinfo.dwSize.Y - 1;
-    srcRect.Right = bufferinfo.dwSize.X - 1;
-
-    int display_size = bufferinfo.dwSize.X * bufferinfo.dwSize.Y;
-    CHAR_INFO chiBuffer[3600];
-    //CHAR_INFO *chiBuffer;
-    //chiBuffer = (CHAR_INFO*)malloc(display_size*sizeof(CHAR_INFO));
-    COORD coordBufsize;
-    coordBufsize.Y = bufferinfo.dwSize.Y;
-    coordBufsize.X = bufferinfo.dwSize.X;
-
-    COORD coordBufCoord;
-    coordBufCoord.X = 0;
-    coordBufCoord.Y = 0;
+    SMALL_RECT srcRect = { 0, 0, bufferinfo.dwSize.X - 1, bufferinfo.dwSize.Y - 1 };
+    int display_size = bufferinfo.dwSize.X * bufferinfo.dwSize.Y * sizeof(CHAR_INFO);
+    CHAR_INFO *chiBuffer = malloc(display_size);
+    COORD coordBufsize = { bufferinfo.dwSize.X, bufferinfo.dwSize.Y };
+    COORD coordBufCoord = { 0, 0 };
 
     clear_display(hBackgroundBuffer);
-    if (ticks > old_tick)
+    switch (page)
     {
-        switch (page)
-        {
         case 1:
             ConveyorOne();
             break;
@@ -285,13 +260,11 @@ void update_display(void)
             break;
         default:
             break;
-        }
     }
 
-    ReadConsoleOutput(hBackgroundBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect);
-    WriteConsoleOutput(hDisplayBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect);
-    //free(chiBuffer);
-
-    old_tick = ticks;
+    ReadConsoleOutput(hBackgroundBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect); //Copy background screen buffer
+    WriteConsoleOutput(hDisplayBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect);   //Paste screen onto disply buffer
+    
+    free(chiBuffer); //Free up memory
 }
 
