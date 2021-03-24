@@ -68,14 +68,18 @@ int main()
         {
             update_display();
             get_key_press();    
-            GetConsoleScreenBufferInfo(hStdout, &bufferinfo);   //-----ADDED 22/03/21----- attempt to add blank spaces
+            GetConsoleScreenBufferInfo(hSimulationBuffer, &bufferinfo); //-----ADDED 22/03/21----- attempt to add blank spaces
             dwConSize = bufferinfo.dwSize.X * bufferinfo.dwSize.Y;
-            if (!FillConsoleOutputCharacter(hStdout,            // Handle to console screen buffer
-                (TCHAR)' ',                                     // Character to write to the buffer
-                dwConSize,                                      // Number of cells to write
-                coordScreen,                                    // Coordinates of first cell
-                &cCharsWritten))                                // Receive number of characters written 
-            
+           /* if (!FillConsoleOutputCharacter(hSimulationBuffer,          // Handle to console screen buffer
+                (TCHAR)' ',                                             // Character to write to the buffer
+                dwConSize,                                              // Number of cells to write
+                coordScreen,                                            // Coordinates of first cell
+                &cCharsWritten))                                        // Receive number of characters written 
+            if (!FillConsoleOutputAttribute(hSimulationBuffer,         // Handle to console screen buffer
+                    bufferinfo.wAttributes,                            // Character attributes to use
+                    dwConSize,        // Number of cells to set attribute
+                    coordScreen,      // Coordinates of first cell
+                    &cCharsWritten))  // Receive number of characters written*/
 
             
             old_tick = ticks;
