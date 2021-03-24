@@ -96,6 +96,7 @@ void mainmenu(void)
 
     SetConsoleCursorPosition(hSimulationBuffer, set_cursor(5, 11));
 }
+
 void ConveyorOne(void)
 {
     system("cls");
@@ -217,9 +218,9 @@ void init_screen_buffers(void)
 
 void clear_display(HANDLE hbuffer)
 {
-    CONSOLE_SCREEN_BUFFER_INFO bufferinfo;  //added 22/03/21
-    DWORD cCharsWritten, dwConSize;         //added 22/03/21
-    COORD coordScreen = { 0,0 };              //added 22/03/21
+    CONSOLE_SCREEN_BUFFER_INFO bufferinfo;              //added 22/03/21
+    DWORD cCharsWritten, dwConSize;                     //added 22/03/21
+    COORD coordScreen = { 0,0 };                        //added 22/03/21
 
     GetConsoleScreenBufferInfo(hbuffer, &bufferinfo);   //-----ADDED 22/03/21----- attempt to add blank spaces
     dwConSize = bufferinfo.dwSize.X * bufferinfo.dwSize.Y;
@@ -229,7 +230,7 @@ void clear_display(HANDLE hbuffer)
         coordScreen,                                    // Coordinates of first cell
         &cCharsWritten))                                // Receive number of characters written 
     {
-        while (1); //Error occured, halt here
+        while (1);                                      //Error occured, halt here
     }
         
 }
@@ -269,6 +270,7 @@ void update_display(void)
             sprintf_s(update_buffer, 100, "%d", sim_get_belt0(i));
             SetConsoleCursorPosition(hSimulationBuffer, set_cursor(i+4, 0));
             WriteConsoleA(hSimulationBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
+
             sprintf_s(update_buffer, 100, "%d", sim_get_belt1(i));
             SetConsoleCursorPosition(hSimulationBuffer, set_cursor(i+4, 5));
             WriteConsoleA(hSimulationBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
