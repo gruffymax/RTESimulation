@@ -9,25 +9,26 @@
 #include "simulation.h"
 
 
-//prototypes
+//Prototypes
 void mainmenu(void);
 void ConveyorOne(void);
 void ConveyorTwo(void);
 void init_screen_buffers(void);
-int Screen_Update(void);
 void get_key_press(void);
+void update_display(void);
+void clear_display(HANDLE hbuffer);
 
+//Thread Prototypes
+void thread_tick(void);
+
+//Global Variables
+extern uint32_t ticks;
+extern int simulation_run;
+
+//Variables
 COORD set_cursor(int X, int Y);
 DWORD fdwMode;
 BOOL res = 0;
-void update_display(void);
-
-//thread prototypes
-void thread_tick(void);
-
-//Global variables
-extern uint32_t ticks;
-extern int simulation_run;
 
 int simulation_run = 1;
 int LargeBlock;
@@ -38,9 +39,7 @@ int choice;
 char text_buffer[200];
 char Stopchoice[50];
 HANDLE hStdout, hSimulationBuffer, hSimulationBuffer, hSimulationBuffer, hStdin = NULL;
-CONSOLE_SCREEN_BUFFER_INFO bufferinfo;  //added 22/03/21
-DWORD cCharsWritten, dwConSize;         //added 22/03/21
-COORD coordScreen = {0,0};              //added 22/03/21
+
 
 //main
 int main()
@@ -68,19 +67,6 @@ int main()
         {
             update_display();
             get_key_press();    
-            GetConsoleScreenBufferInfo(hSimulationBuffer, &bufferinfo); //-----ADDED 22/03/21----- attempt to add blank spaces
-            dwConSize = bufferinfo.dwSize.X * bufferinfo.dwSize.Y;
-           /* if (!FillConsoleOutputCharacter(hSimulationBuffer,          // Handle to console screen buffer
-                (TCHAR)' ',                                             // Character to write to the buffer
-                dwConSize,                                              // Number of cells to write
-                coordScreen,                                            // Coordinates of first cell
-                &cCharsWritten))                                        // Receive number of characters written 
-            if (!FillConsoleOutputAttribute(hSimulationBuffer,         // Handle to console screen buffer
-                    bufferinfo.wAttributes,                            // Character attributes to use
-                    dwConSize,        // Number of cells to set attribute
-                    coordScreen,      // Coordinates of first cell
-                    &cCharsWritten))  // Receive number of characters written*/
-
             
             old_tick = ticks;
             Sleep(100);
@@ -289,6 +275,25 @@ void init_screen_buffers(void)
     SetConsoleActiveScreenBuffer(hSimulationBuffer);
 }
 
+void clear_display(HANDLE hbuffer)
+{
+    CONSOLE_SCREEN_BUFFER_INFO bufferinfo;  //added 22/03/21
+    DWORD cCharsWritten, dwConSize;         //added 22/03/21
+    COORD coordScreen = { 0,0 };              //added 22/03/21
+
+    GetConsoleScreenBufferInfo(hbuffer, &bufferinfo);   //-----ADDED 22/03/21----- attempt to add blank spaces
+    dwConSize = bufferinfo.dwSize.X * bufferinfo.dwSize.Y;
+    if (!FillConsoleOutputCharacter(hStdout,            // Handle to console screen buffer
+        (TCHAR)' ',                                     // Character to write to the buffer
+        dwConSize,                                      // Number of cells to write
+        coordScreen,                                    // Coordinates of first cell
+        &cCharsWritten))                                // Receive number of characters written 
+    {
+        while (1); //Error occured, halt here
+    }
+        
+}
+
 COORD set_cursor(int X, int Y)
 {
     COORD pos = { X, Y };
@@ -300,6 +305,8 @@ void update_display(void)
     uint32_t old_tick = 0;
     char update_buffer[100];
     int i = 0;
+
+    clear_display(hSimulationBuffer);
     SetConsoleActiveScreenBuffer(hSimulationBuffer);
     if (ticks > old_tick)
     {
@@ -330,11 +337,6 @@ void update_display(void)
     old_tick = ticks;
 }
 
-
-int Screen_Update()
-{
-
-}
 
 /* 11111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000>
  *           ^                   ^         ^                                       ^                   ^
