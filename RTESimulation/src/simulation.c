@@ -13,8 +13,7 @@ void thread_tick(void)
 			ticks++;
 		}
 		Sleep(100);
-	}
-	
+	}	
 }
 
 void thread_simulation(void)

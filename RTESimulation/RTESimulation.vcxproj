@@ -148,8 +148,10 @@
     <ClCompile Include="src\gates.c" />
     <ClCompile Include="src\motor.c" />
     <ClCompile Include="src\simulation.c" />
+    <ClCompile Include="ui_display.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ui_display.h" />
     <ClInclude Include="inc\belt.h" />
     <ClInclude Include="inc\cinterface.h" />
     <ClInclude Include="inc\gates.h" />
