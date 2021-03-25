@@ -200,7 +200,6 @@ void update_display(void)
     switch (page)
     {
     case 1:
-       // ConveyorOne();
         Conveyor();
         break;
     case 0:
@@ -211,7 +210,7 @@ void update_display(void)
     }
 
     for (i = 0; i < BELT_LENGTH_U; i++)
-    {
+    {        
         sprintf_s(update_buffer, 100, "%d", sim_get_belt0(i));
         SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 4, 0));
         WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
