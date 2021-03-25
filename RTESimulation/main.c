@@ -19,13 +19,8 @@ void update_display(void);
 void clear_display(HANDLE hbuffer);
 COORD set_cursor(int X, int Y);
 
-//Thread Prototypes
-void thread_tick(void);
-
 //Global Variables
-extern uint32_t ticks;
-extern int simulation_run;
-extern int simulation_pause;
+extern uint32_t ticks; // Defined in simulation.h
 
 //Variables
 int simulation_run = 1;
@@ -38,7 +33,6 @@ int choice;
 char text_buffer[200];
 char Stopchoice[50];
 HANDLE hStdout, hBackgroundBuffer, hDisplayBuffer, hStdin = NULL;
-
 
 //main
 int main()
@@ -56,6 +50,7 @@ int main()
         Sleep(20);
     }
 }
+
 void mainmenu(void)
 {
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 7)); // Move cursor to Top-Left corner of buffer
