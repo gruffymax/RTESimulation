@@ -7,6 +7,7 @@
 #include <conio.h>
 #include <process.h>
 #include "simulation.h"
+#include "ui_display.h"
 
 
 //Global Variables
