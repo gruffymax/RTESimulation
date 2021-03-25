@@ -2,7 +2,7 @@
 
 uint32_t ticks = 0;
 extern int simulation_run;
-extern int simulation_pause;
+int simulation_pause;
 
 void thread_tick(void)
 {
@@ -46,4 +46,14 @@ char sim_get_belt0(uint16_t element)
 char sim_get_belt1(uint16_t element)
 {
 	return get_belt1_element(element);
+}
+
+void stop_simulation(void)
+{
+	simulation_pause = 1;
+}
+
+void run_simulation(void)
+{
+	simulation_pause = 0;
 }

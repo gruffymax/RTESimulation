@@ -56,5 +56,11 @@
     <ClInclude Include="ui_display.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tasks.c">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tasks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
