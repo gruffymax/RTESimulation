@@ -1,7 +1,7 @@
 #include "simulation.h"
 
 uint32_t ticks = 0;
-extern int simulation_run;
+extern BOOL simulation_run;
 int simulation_pause;
 
 void thread_tick(void)
@@ -57,3 +57,4 @@ void run_simulation(void)
 {
 	simulation_pause = 0;
 }
+
