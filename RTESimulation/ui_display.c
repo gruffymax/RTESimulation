@@ -1,6 +1,7 @@
 #include "ui_display.h"
 #include <string.h>
 #include "simulation.h"
+#include <windows.h>
 
 /* Global Variables */
 extern int simulation_run;
@@ -96,7 +97,7 @@ void get_key_press(void)
     GetNumberOfConsoleInputEvents(hStdin, &chars_out);
     if (chars_out != 0)
     {
-        res = ReadConsoleInput(hStdin, &irInBuff, 1, &chars_out, NULL);
+        res = ReadConsoleInput(hStdin, &irInBuff, 1, &chars_out);
 
         if (irInBuff.EventType == KEY_EVENT && irInBuff.Event.KeyEvent.bKeyDown == 1)
         {
@@ -209,17 +210,17 @@ void update_display(void)
         break;
     }
 
-    for (i = 0; i < BELT_LENGTH_U; i++)
-    {        
-        sprintf_s(update_buffer, 100, "%d", sim_get_belt0(i));
-        SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 4, 0));
-        WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
+        for (i = 0; i < BELT_LENGTH_U; i++)
+        {
+            sprintf_s(update_buffer, 100, "%d", sim_get_belt0(i));
+            SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 4, 0));
+            WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
 
-        sprintf_s(update_buffer, 100, "%d", sim_get_belt1(i));
-        SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 4, 5));
-        WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
-    }
-
+            sprintf_s(update_buffer, 100, "%d", sim_get_belt1(i));
+            SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 4, 5));
+            WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);        
+        }
+    
     ReadConsoleOutput(hBackgroundBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect); //Copy background screen buffer
     WriteConsoleOutput(hDisplayBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect);   //Paste screen onto disply buffer
 

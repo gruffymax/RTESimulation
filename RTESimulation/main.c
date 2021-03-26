@@ -25,7 +25,7 @@ int main()
     init_screen_buffers();                              // Our function to create screen buffer handles etc
     _beginthread(thread_tick, 4, NULL);                 // Start the simulation ticker running
     _beginthread(thread_simulation, 16, NULL);          // Start the simulation thread
-    _beginthread(thread_task_read_sensors, 64, NULL);   // Start the "Read Sensor" Task
+  //  _beginthread(thread_task_read_sensors, 64, NULL);   // Start the "Read Sensor" Task
     
 
     while (simulation_run)
