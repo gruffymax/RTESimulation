@@ -2,7 +2,7 @@
 
 uint32_t ticks = 0;
 extern BOOL simulation_run;
-int simulation_pause;
+extern BOOL simulation_pause;
 
 void thread_tick(void)
 {

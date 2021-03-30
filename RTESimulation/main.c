@@ -8,7 +8,7 @@
 #include <process.h>
 #include "simulation.h"
 #include "ui_display.h"
-#include "tasks.h"
+#include "simtasks.h"
 
 
 //Global Variables
@@ -16,7 +16,7 @@ extern uint32_t ticks; // Defined in simulation.h
 
 //Variables
 BOOL simulation_run = 1;
-BOOL simulation_pause = 0;
+BOOL simulation_pause = 1;
 
 //main
 int main()
@@ -25,7 +25,7 @@ int main()
     init_screen_buffers();                              // Our function to create screen buffer handles etc
     _beginthread(thread_tick, 4, NULL);                 // Start the simulation ticker running
     _beginthread(thread_simulation, 16, NULL);          // Start the simulation thread
-  //  _beginthread(thread_task_read_sensors, 64, NULL);   // Start the "Read Sensor" Task
+    _beginthread(thread_task_read_sensors, 64, NULL);   // Start the "Read Sensor" Task
     
 
     while (simulation_run)

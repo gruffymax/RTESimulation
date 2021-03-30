@@ -151,8 +151,12 @@
     <ClCompile Include="ui_display.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="tasks.c" />
-    <ClInclude Include="tasks.h" />
+    <ClInclude Include="simtasks.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="simtasks.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="ui_display.h" />
     <ClInclude Include="inc\belt.h" />
     <ClInclude Include="inc\cinterface.h" />

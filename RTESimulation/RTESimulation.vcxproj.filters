@@ -56,10 +56,10 @@
     <ClInclude Include="ui_display.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tasks.c">
+    <ClInclude Include="simtasks.c">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="tasks.h">
+    <ClInclude Include="simtasks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
