@@ -29,6 +29,7 @@
 #define SIZE_SENSOR1_POS	30	// Position of 1st sensor
 #define SIZE_SESNOR2_POS	40	// Position of 2nd sensor
 #define COUNT_SENSOR_POS	100 // Position of count sensor
+#define GATE_POS			80  // Position of gates
 
 /* Calculated definitions */
 #define BELT_LENGTH_U (BELT_LENGTH_S * (1000 / STEP_LENGTH_MS) + LARGE_BLOCK_U) // Belt length in units

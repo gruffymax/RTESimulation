@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="semphr.c" />
     <ClCompile Include="src\belt.c" />
     <ClCompile Include="src\cinterface.c" />
     <ClCompile Include="src\gates.c" />
@@ -156,6 +157,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <FileType>CppCode</FileType>
     </ClCompile>
+    <ClInclude Include="semphr.h" />
     <ClInclude Include="simtasks.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>

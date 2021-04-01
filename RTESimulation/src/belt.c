@@ -6,6 +6,7 @@
  */
 
 #include "belt.h"
+#include "gates.h"
 
 /* Static Private functions */
 static char check_starting_zone(char belt);
@@ -148,7 +149,14 @@ void move_belt0_fwds(void)
 	uint16_t i = 0;
 	for (i=BELT_LENGTH_U - 1; i>0; i--)
 	{
-		belt0[i] = belt0[i-1];
+		if ((get_gate0() == 1) && i == (GATE_POS-1))
+		{
+			belt0[i] = 0;
+		}
+		else
+		{
+			belt0[i] = belt0[i - 1];
+		}
 	}
 	belt0[0] = 0;
 }
@@ -158,7 +166,14 @@ void move_belt1_fwds(void)
 	uint16_t i = 0;
 	for (i=BELT_LENGTH_U - 1; i>0; i--)
 	{
-		belt1[i] = belt1[i-1];
+		if ((get_gate1() == 1) && (i == GATE_POS - 1))
+		{
+			belt1[i] = 0;
+		}
+		else
+		{
+			belt1[i] = belt1[i - 1];
+		}
 	}
 	belt1[0] = 0;
 }
