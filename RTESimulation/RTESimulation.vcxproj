@@ -151,9 +151,11 @@
     <ClCompile Include="ui_display.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="simtasks.c">
+    <ClCompile Include="simtasks.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <FileType>CppCode</FileType>
+    </ClCompile>
     <ClInclude Include="simtasks.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>

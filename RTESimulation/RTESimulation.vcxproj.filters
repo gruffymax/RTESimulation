@@ -36,6 +36,9 @@
     <ClCompile Include="ui_display.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="simtasks.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\belt.h">
@@ -55,9 +58,6 @@
     </ClInclude>
     <ClInclude Include="ui_display.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="simtasks.c">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="simtasks.h">
       <Filter>Header Files</Filter>
