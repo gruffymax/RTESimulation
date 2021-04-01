@@ -9,7 +9,10 @@
 #include "simulation.h"
 #include "ui_display.h"
 #include "simtasks.h"
+#include "semphr.h"
 
+//Mutexes
+char* gate_open_mutex = NULL;
 
 //Global Variables
 extern uint32_t ticks; // Defined in simulation.h
@@ -23,9 +26,12 @@ int main()
 {
     // Initialistion
     init_screen_buffers();                              // Our function to create screen buffer handles etc
+    gate_open_mutex = create_mutex();
+
     _beginthread(thread_tick, 4, NULL);                 // Start the simulation ticker running
     _beginthread(thread_simulation, 16, NULL);          // Start the simulation thread
     _beginthread(thread_task_read_sensors, 64, NULL);   // Start the "Read Sensor" Task
+    _beginthread(thread_task_gate_control, 64, NULL);   // Start the "Gate Control" task
     
 
     while (simulation_run)
@@ -34,6 +40,8 @@ int main()
         get_key_press();
         Sleep(20);
     }
+
+    free(gate_open_mutex);
 }
 
 

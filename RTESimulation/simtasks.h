@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <windows.h>
+#include "semphr.h"
 
 void thread_task_read_sensors(void);
 void thread_task_gate_control(void);

@@ -2,6 +2,7 @@
 #define SEMPHR_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 char* create_mutex(void);
 char take_mutex(char* mutex_handle);
