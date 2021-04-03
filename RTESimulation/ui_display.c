@@ -1,5 +1,6 @@
 #include "ui_display.h"
 #include <string.h>
+#include <stdio.h>
 #include "simulation.h"
 #include <windows.h>
 
