@@ -12,7 +12,7 @@
 #include "semphr.h"
 
 //Mutexes
-char* gate_open_mutex = NULL;
+MUTEX gate_open_mutex = NULL;
 
 //Global Variables
 extern uint32_t ticks; // Defined in simulation.h
