@@ -27,6 +27,7 @@ int main()
     // Initialistion
     init_screen_buffers();                              // Our function to create screen buffer handles etc
     gate_open_mutex = create_mutex();
+    take_mutex(gate_open_mutex);
 
     _beginthread(thread_tick, 4, NULL);                 // Start the simulation ticker running
     _beginthread(thread_simulation, 16, NULL);          // Start the simulation thread

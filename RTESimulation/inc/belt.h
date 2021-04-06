@@ -27,7 +27,7 @@
 #define BELT_LENGTH_S 		10 	// Length of belt in seconds
 #define STEP_LENGTH_MS 		100 // Period of system tick in milliseconds
 #define SIZE_SENSOR1_POS	30	// Position of 1st sensor
-#define SIZE_SESNOR2_POS	40	// Position of 2nd sensor
+#define SIZE_SESNOR2_POS	39	// Position of 2nd sensor
 #define COUNT_SENSOR_POS	100 // Position of count sensor
 #define GATE_POS			80  // Position of gates
 
