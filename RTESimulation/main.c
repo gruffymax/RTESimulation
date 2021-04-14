@@ -11,9 +11,11 @@
 #include "simtasks.h"
 #include "semphr.h"
 
-//Mutexes
-MUTEX gate_open_mutex = NULL;
-
+//Semaphores
+SEMPHR gate_open_semphr0 = NULL;
+SEMPHR gate_open_semphr1 = NULL;
+SEMPHR gate_close_semphr0 = NULL;
+SEMPHR gate_close_semphr1 = NULL;
 //Global Variables
 extern uint32_t ticks; // Defined in simulation.h
 
@@ -26,15 +28,14 @@ int main()
 {
     // Initialistion
     init_screen_buffers();                              // Our function to create screen buffer handles etc
-    gate_open_mutex = create_mutex();
-    take_mutex(gate_open_mutex);
+    gate_open_semphr = create_semphr();
+    take_semphr(gate_open_semphr);
 
     _beginthread(thread_tick, 4, NULL);                 // Start the simulation ticker running
     _beginthread(thread_simulation, 16, NULL);          // Start the simulation thread
     _beginthread(thread_task_read_sensors, 64, NULL);   // Start the "Read Sensor" Task
     _beginthread(thread_task_gate_control, 64, NULL);   // Start the "Gate Control" task
     
-
     while (simulation_run)
     {
         update_display();
@@ -42,7 +43,7 @@ int main()
         Sleep(20);
     }
 
-    free(gate_open_mutex);
+    free(gate_open_semphr);
 }
 
 

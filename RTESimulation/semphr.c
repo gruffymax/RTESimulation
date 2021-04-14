@@ -1,29 +1,28 @@
 #include "semphr.h"
 
-MUTEX create_mutex(void)
+SEMPHR create_semphr(void)
 {
-	char *mutex = NULL; 
-	mutex = (char*)malloc(sizeof(char));
-	*mutex = 1; //Mutex available
-	return mutex;
+	char* semphr = NULL;
+	semphr = (char*)malloc(sizeof(char));
+	*semphr = 1;
+	return semphr;
+}
+char take_semphr(SEMPHR semphr_handle)
+{
+	if (*semphr_handle == 1)
+	{
+		*semphr_handle = 0;
+		return 1; // Semaphore successfully taken
+	}
+	return 0; // Semaphore not taken
 }
 
-char take_mutex(MUTEX mutex_handle)
+char give_semphr(SEMPHR semphr_handle)
 {
-	if (*mutex_handle == 1)
+	if (*semphr_handle == 0)
 	{
-		*mutex_handle = 0;
-		return 1; // Mutex successfully taken
+		*semphr_handle = 1;
+		return 1; // Semaphore successfully given
 	}
-	return 0; // Mutex not taken
-}
-
-char give_mutex(MUTEX mutex_handle)
-{
-	if (*mutex_handle == 0)
-	{
-		*mutex_handle = 1;
-		return 1; // Mutex successfully given
-	}
-	return 0; // Mutex not given
+	return 0; // Semaphore not given
 }

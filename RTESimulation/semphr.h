@@ -4,10 +4,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef char* MUTEX;
+typedef char* SEMPHR;
 
-MUTEX create_mutex(void);
-char take_mutex(MUTEX mutex_handle);
-char give_mutex(MUTEX mutex_handle);
+SEMPHR create_semphr(void);
+char take_semphr(SEMPHR semphr_handle);
+char give_semphr(SEMPHR semphr_handle);
 
 #endif // SEMPHR_H
