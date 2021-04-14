@@ -1,10 +1,10 @@
 #include "semphr.h"
 
-SEMPHR create_semphr(void)
+SEMPHR create_semphr(char start_value)
 {
 	char* semphr = NULL;
 	semphr = (char*)malloc(sizeof(char));
-	*semphr = 1;
+	*semphr = start_value;
 	return semphr;
 }
 char take_semphr(SEMPHR semphr_handle)

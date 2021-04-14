@@ -6,7 +6,7 @@
 
 typedef char* SEMPHR;
 
-SEMPHR create_semphr(void);
+SEMPHR create_semphr(char start_value);
 char take_semphr(SEMPHR semphr_handle);
 char give_semphr(SEMPHR semphr_handle);
 

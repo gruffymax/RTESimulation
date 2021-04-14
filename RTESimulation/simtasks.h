@@ -7,6 +7,7 @@
 
 void thread_task_read_sensors(void);
 void thread_task_gate_control(void);
+void thread_task_count_sensor(void);
 
 
 #endif //SIMTASKS_H

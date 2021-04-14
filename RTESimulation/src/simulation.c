@@ -22,6 +22,8 @@ void thread_simulation(void)
 {
 	static uint32_t old_tick = 0;
 	uint8_t res = 0;
+	set_gate0(1); // Start with closed gates
+	set_gate1(1);
 
 	while (simulation_run)
 	{
