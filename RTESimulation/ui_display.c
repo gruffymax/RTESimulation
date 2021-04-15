@@ -12,8 +12,10 @@ extern int simulation_pause;
 HANDLE hStdout, hBackgroundBuffer, hDisplayBuffer, hStdin = NULL;
 char text_buffer[200];
 int page;
-int LargeBlock;
-int SmallBlock;
+int LargeBlock0;
+int LargeBlock1;
+int SmallBlock0;
+int SmallBlock1;
 
 void mainmenu(void)
 {
@@ -109,11 +111,11 @@ void Conveyor(void)
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1, y1+1)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "No. Large blocks:  %d", LargeBlock); // Create text buffer to display
+    sprintf_s(text_buffer, 100, "No. Large blocks:  %d", LargeBlock0); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1, y1+2)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock); // Create text buffer to display
+    sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock0); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
     
     /*OPTION MENU*/
@@ -141,11 +143,11 @@ void Conveyor(void)
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);   // Put text buffer onto screen at the cursor position.
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x2, y1+1));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "No. Large blocks:  %d", LargeBlock);                   // Create text buffer to display
+    sprintf_s(text_buffer, 100, "No. Large blocks:  %d", LargeBlock1);                   // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);   // Put text buffer onto screen at the cursor position.
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x2, y1+2));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock);                   // Create text buffer to display
+    sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock1);                   // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);   // Put text buffer onto screen at the cursor position.
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x2, y1+7));                           // Move cursor to Top-Left corner of buffer

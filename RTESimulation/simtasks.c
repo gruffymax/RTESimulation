@@ -11,6 +11,13 @@ extern BOOL simulation_run;
 extern BOOL simulation_pause;
 extern SEMPHR gate_open_semphr0;
 extern SEMPHR gate_open_semphr1;
+
+extern int SmallBlock;
+extern int LargeBlock0;
+extern int LargeBlock1;
+extern int SmallBlock0;
+extern int SmallBlock1;
+
 enum sensor_state_e {sensor_idle_state, transition_state, small_state, big_state};
 enum gate_state_e {gate_idle_state, delay_state, open_state, wait_state};
 
@@ -56,20 +63,39 @@ void thread_task_gate_control(void)
 
 void thread_task_count_sensor(void)
 {
+	char previous_state0 = 0;
+	char previous_state1 = 0;
 	while (simulation_run)
 	{
 		resetCountSensor(0);
 		resetCountSensor(1);
+
 		if (readCountSensor(0))
 		{
-			//TODO increment a counter
-
+			if (previous_state0 == 0)
+			{
+				LargeBlock0++;
+			}
+			
+			previous_state0 = 1;
+		}
+		else
+		{
+			previous_state0 = 0;
 		}
 
 		if (readCountSensor(1))
 		{
-			//TODO increment a counter
+			if (previous_state1 == 0)
+			{
+				LargeBlock1++;
+			}
 
+			previous_state1 = 1;
+		}
+		else
+		{
+			previous_state1 = 0;
 		}
 
 		Sleep(10);
@@ -99,7 +125,7 @@ static void sensor_0_state_machine(enum sensor_state_e *state0, char *belt0senso
 		}
 		break;
 	case small_state:
-		//TODO increment small block counter
+		SmallBlock0++;
 		*state0 = sensor_idle_state;
 		break;
 	case big_state:
@@ -135,7 +161,7 @@ static void sensor_1_state_machine(enum sensor_state_e *state1, char *belt1senso
 		}
 		break;
 	case small_state:
-		//TODO increment small block counter
+		SmallBlock1++;
 		*state1 = sensor_idle_state;
 		break;
 	case big_state:
@@ -178,6 +204,7 @@ static char gate_0_state_machine(enum gate_state_e * state0)
 	case wait_state:
 		if (ticks >= end_ticks + 15)
 		{
+			Sleep(1500);
 			*state0 = gate_idle_state;
 			return 1;
 		}
