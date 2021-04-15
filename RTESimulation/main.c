@@ -47,5 +47,3 @@ int main()
     free(gate_open_semphr1);
 
 }
-
-

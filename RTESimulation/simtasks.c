@@ -1,12 +1,10 @@
 #include "simtasks.h"
 #include "cinterface.h"
 
-
 static void sensor_0_state_machine(enum sensor_state_e* state0);
 static void sensor_1_state_machine(enum sensor_state_e* state1);
 static char gate_0_state_machine(enum gate_state_e* state0);
 static char gate_1_state_machine(enum gate_state_e* state1);
-
 
 extern uint32_t ticks;
 extern BOOL simulation_run;
