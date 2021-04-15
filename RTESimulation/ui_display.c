@@ -151,55 +151,55 @@ void Conveyor(void)
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x2, y1+7));                           // Move cursor to Top-Left corner of buffer
 
    /*CONVEYOR MARKS*/
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(23, 1)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(33, 1)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "^"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(23, 2)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "s1"); // Create text buffer to display
-    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
-
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(23, 4)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "v"); // Create text buffer to display
-    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
-
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(33, 1)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "^"); // Create text buffer to display
-    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
-
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(33, 2)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "s2"); // Create text buffer to display
+    sprintf_s(text_buffer, 100, "s1"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(33, 4)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "v"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(73, 1)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(43, 1)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "^"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(73, 2)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(43, 2)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "s2"); // Create text buffer to display
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
+
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(43, 4)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "v"); // Create text buffer to display
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
+
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(83, 1)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "^"); // Create text buffer to display
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
+
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(83, 2)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "G"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(73, 4)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(83, 4)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "v"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(93, 1)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(103, 1)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "^"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(93, 2)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(103, 2)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "CS"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(93, 4)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(103, 4)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "v"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(93, 4)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(103, 4)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "v"); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
