@@ -1,6 +1,7 @@
 #include "simtasks.h"
 #include "cinterface.h"
 
+
 static void sensor_0_state_machine(enum sensor_state_e* state0);
 static void sensor_1_state_machine(enum sensor_state_e* state1);
 static char gate_0_state_machine(enum gate_state_e* state0);
@@ -12,9 +13,9 @@ extern BOOL simulation_run;
 extern BOOL simulation_pause;
 extern SEMPHR gate_open_semphr0;
 extern SEMPHR gate_open_semphr1;
-
 enum sensor_state_e {sensor_idle_state, transition_state, small_state, big_state};
 enum gate_state_e {gate_idle_state, delay_state, open_state, wait_state};
+
 
 void thread_task_read_sensors(void)
 {
