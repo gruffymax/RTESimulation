@@ -24,27 +24,7 @@ enum sensor_state_e {sensor_idle_state, transition_state, small_state, big_state
 enum gate_state_e {gate_idle_state, delay_state, open_state, wait_state};
 
 
-void thread_task_read_sensors(void)
-{
-	static enum sensor_state_e state0 = sensor_idle_state;
-	static enum sensor_state_e state1 = sensor_idle_state;
-	while (simulation_run)
-	{
-		char belt0sensor;
-		char belt1sensor;
-		if (!simulation_pause)
-		{
-			resetSizeSensors(0);
-			resetSizeSensors(1);
-			belt0sensor = readSizeSensors(0);
-			belt1sensor = readSizeSensors(1);
 
-			sensor_0_state_machine(&state0, &belt0sensor);
-			sensor_1_state_machine(&state1, &belt1sensor);
-		}
-		Sleep(10);
-	}
-}
 
 void thread_task_gate_control(void)
 {
