@@ -106,7 +106,7 @@ void thread_tick(void)
     while (simulation_run)
     {
         sim_tick++;
-        Sleep(1);
+        Sleep(10);
     }
 }
 
@@ -119,7 +119,7 @@ void thread_simulation(void)
 
     while (simulation_run)
     {
-        if (sim_tick > old_tick + 100)
+        if (sim_tick > old_tick + 10)
         {
             res = block_dropper();
 
@@ -131,7 +131,6 @@ void thread_simulation(void)
 
             old_tick = sim_tick;
         }
-        Sleep(1);
     }
 }
 
@@ -159,7 +158,7 @@ static uint8_t block_dropper(void)
 {
     static uint8_t block0 = 0; //0 = small, 1 = big;
     static uint8_t block1 = 1;
-    static uint32_t time_to_drop = 1000;
+    static uint32_t time_to_drop = 100;
     uint8_t res = 1;
 
     if (sim_tick >= time_to_drop)
@@ -186,7 +185,7 @@ static uint8_t block_dropper(void)
             block1 = 1;
         }
 
-        time_to_drop = time_to_drop + 4000;
+        time_to_drop = time_to_drop + 400;
 
         return res;
     }

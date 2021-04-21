@@ -53,6 +53,6 @@ void thread_display(void)
     {
         update_display();
         get_key_press();
-        Sleep(20);
+        Sleep(100);
     }
 }

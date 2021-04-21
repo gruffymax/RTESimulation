@@ -193,7 +193,7 @@ static char gate_0_state_machine(enum gate_state_e * state0)
 		break;
 
 	case delay_state:
-		if (sim_tick >= start_ticks + 3800)
+		if (sim_tick >= start_ticks + 380)
 		{
 			*state0 = open_state;
 		}
@@ -205,7 +205,7 @@ static char gate_0_state_machine(enum gate_state_e * state0)
 		return 0;
 
 	case wait_state:
-		if (sim_tick >= end_ticks + 1500)
+		if (sim_tick >= end_ticks + 200)
 		{
 			//Sleep(1500);
 			*state0 = gate_idle_state;
@@ -236,7 +236,7 @@ static char gate_1_state_machine(enum gate_state_e * state1)
 		break;
 
 	case delay_state:
-		if (sim_tick >= start_ticks + 3800)
+		if (sim_tick >= start_ticks + 380)
 		{
 			*state1 = open_state;
 		}
@@ -247,7 +247,7 @@ static char gate_1_state_machine(enum gate_state_e * state1)
 		return 0;
 
 	case wait_state:
-		if (sim_tick >= end_ticks + 1500)
+		if (sim_tick >= end_ticks + 200)
 		{
 			*state1 = gate_idle_state;
 			return 1;
