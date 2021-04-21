@@ -4,9 +4,12 @@
 #include "simulation.h"
 #include <windows.h>
 
+static char* get_state_string(void);
+
 /* Global Variables */
 extern int simulation_run;
 extern int simulation_pause;
+
 
 /* Variables */
 HANDLE hStdout, hBackgroundBuffer, hDisplayBuffer, hStdin = NULL;
@@ -118,24 +121,8 @@ void Conveyor(void)
     sprintf_s(text_buffer, 100, "No. Small blocks:  %d", SmallBlock0); // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
     
-    /*OPTION MENU*/
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+3)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "Option menu:");                                         // Create text buffer to display
-    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);    // Put text buffer onto screen at the cursor position.
-
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+4));                            // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[0] - Main Menu");                                      // Create text buffer to display
-    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
-    
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+5));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[p] - Pause Simulation");                                    // Create text buffer to display
-    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
-
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+6));                           // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "[q] - Stop Simulation");                                    // Create text buffer to display
-    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
-
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1, y1+7));                           // Move cursor to Top-Left corner of buffer
+    /*Context Information*/
+    print_context_information();
    
    /*CONVEYOR 2 PRINTING*/
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x2, y1));                           // Move cursor to Top-Left corner of buffer
@@ -369,4 +356,55 @@ void update_display(void)
     WriteConsoleOutput(hDisplayBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect);   //Paste screen onto disply buffer
 
     free(chiBuffer); //Free up memory
+}
+
+void print_context_information(void)
+{
+    extern int next_task;
+    int x1 = 0;
+    int x2 = 80;
+    int y1 = 7;
+    char* buffer;
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1 + 40, y1 + 3)); 
+    sprintf_s(text_buffer, 100, "Context Information:");
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);    
+
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1 + 40, y1 + 4));
+    buffer = get_state_string(0);
+    sprintf_s(text_buffer, 100, "Sensor Task: %s", buffer);
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
+
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1 + 40, y1 + 5));                           // Move cursor to Top-Left corner of buffer
+    buffer = get_state_string(2);
+    sprintf_s(text_buffer, 100, "Count Task:  %s", buffer);                                    // Create text buffer to display
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
+
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1 + 40, y1 + 6));                           // Move cursor to Top-Left corner of buffer
+    buffer = get_state_string(1);
+    sprintf_s(text_buffer, 100, "Gate Task:   %s", buffer);                                    // Create text buffer to display
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
+    free(buffer);
+}
+
+static char* get_state_string(int taskNo)
+{
+    extern int next_task;
+    char* buffer = malloc(15);
+
+    switch (task[taskNo].state)
+    {
+        case Ready:
+            strcpy_s(buffer, 15, "Ready");
+            break;
+        case Running:
+            strcpy_s(buffer, 15, "Running");
+            break;
+        case Blocked:
+            strcpy_s(buffer, 15, "Blocked");
+            break;
+        default:
+            free(buffer);
+            break;
+    }
+    return buffer;
 }

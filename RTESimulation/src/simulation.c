@@ -7,7 +7,7 @@ static uint8_t block_dropper(void);
 static int get_next_task(void);
 static void update_sleep_states(void);
 
-static int next_task;
+int next_task;
 uint32_t sim_tick = 0;
 
 extern BOOL simulation_run;
@@ -17,19 +17,22 @@ void start_scheduler(void)
 {
     while (simulation_run)
     {
-        update_sleep_states();
-        next_task = get_next_task();
-        if (next_task != 0xFF)
+        if (!simulation_pause)
         {
-            task[next_task].state = Running;
-            task[next_task].fp_task(); // Run first task in queue
-            if (task[next_task].state == Running)
+            update_sleep_states();
+            next_task = get_next_task();
+            if (next_task != 0xFF)
             {
-                task[next_task].state = Ready;
+                task[next_task].state = Running;
+                task[next_task].fp_task(); // Run task
+                if (task[next_task].state == Running)
+                {
+                    task[next_task].state = Ready;
+                }
             }
         }
+        Sleep(5);
     }
-    
 }
 
 static int get_next_task(void)
@@ -105,8 +108,11 @@ void thread_tick(void)
 {
     while (simulation_run)
     {
-        sim_tick++;
-        Sleep(10);
+        if (!simulation_pause)
+        {
+            sim_tick++;
+            Sleep(50);
+        }
     }
 }
 
@@ -158,7 +164,7 @@ static uint8_t block_dropper(void)
 {
     static uint8_t block0 = 0; //0 = small, 1 = big;
     static uint8_t block1 = 1;
-    static uint32_t time_to_drop = 100;
+    static uint32_t time_to_drop = 10;
     uint8_t res = 1;
 
     if (sim_tick >= time_to_drop)
