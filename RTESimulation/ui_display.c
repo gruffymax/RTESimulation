@@ -119,23 +119,36 @@ void Conveyor(void)
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position.
     
     /*OPTION MENU*/
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+3)); // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1 + 40, y1+3)); // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "Simulation: ");                                         // Create text buffer to display
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);    // Put text buffer onto screen at the cursor position.
+    if (simulation_pause)
+    {
+        strcpy_s(text_buffer, 100, "Paused");
+    }
+    else
+    {
+        strcpy_s(text_buffer, 100, "Running");
+    }
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);    // Put text buffer onto screen at the cursor position.
+
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+5)); // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "Option menu:");                                         // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);    // Put text buffer onto screen at the cursor position.
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+4));                            // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+6));                            // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "[0] - Main Menu");                                      // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
     
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+5));                           // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+7));                           // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "[p] - Pause Simulation");                                    // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+6));                           // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1+40, y1+8));                           // Move cursor to Top-Left corner of buffer
     sprintf_s(text_buffer, 100, "[q] - Stop Simulation");                                    // Create text buffer to display
     WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);
 
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1, y1+7));                           // Move cursor to Top-Left corner of buffer
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x1, y1+9));                           // Move cursor to Top-Left corner of buffer
    
    /*CONVEYOR 2 PRINTING*/
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(x2, y1));                           // Move cursor to Top-Left corner of buffer
@@ -338,12 +351,12 @@ void update_display(void)
 
         for (i = 0; i < BELT_LENGTH_U; i++)
         {
-            if (i == GATE_POS && get_gate0)
+            if (i == GATE_POS && get_gate0() == 1)
             {
                 // Gate is closed
                 strcpy_s(update_buffer, 100, "|");
                 SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 3, 0));
-                WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
+                WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL); 
             }
             else
             {
@@ -353,7 +366,7 @@ void update_display(void)
                 WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
             }
             
-            if (i == GATE_POS && get_gate0)
+            if (i == GATE_POS && get_gate1() == 1)
             {
                 // Gate is closed
                 strcpy_s(update_buffer, 100, "|");

@@ -19,7 +19,7 @@ extern uint32_t ticks; // Defined in simulation.h
 
 //Variables
 BOOL simulation_run = 1;
-BOOL simulation_pause = 1;
+BOOL simulation_pause = 0;
 
 //main
 int main()

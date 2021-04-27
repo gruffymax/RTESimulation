@@ -56,10 +56,13 @@ void thread_task_gate_control(void)
 	char gate_state = 0;
 	while (simulation_run)
 	{
-		gate0_requested_state = gate_0_state_machine(&state0);
-		gate1_requested_state = gate_1_state_machine(&state1);
-		gate_state = gate0_requested_state | gate1_requested_state << 1;
-		setGates(gate_state);
+		if (!simulation_pause)
+		{
+			gate0_requested_state = gate_0_state_machine(&state0);
+			gate1_requested_state = gate_1_state_machine(&state1);
+			gate_state = gate0_requested_state | gate1_requested_state << 1;
+			setGates(gate_state);
+		}
 		Sleep(10);
 	}
 }
@@ -70,37 +73,39 @@ void thread_task_count_sensor(void)
 	char previous_state1 = 0;
 	while (simulation_run)
 	{
-		resetCountSensor(0);
-		resetCountSensor(1);
-
-		if (readCountSensor(0))
+		if (!simulation_pause)
 		{
-			if (previous_state0 == 0)
+			resetCountSensor(0);
+			resetCountSensor(1);
+
+			if (readCountSensor(0))
 			{
-				LargeBlock0++;
+				if (previous_state0 == 0)
+				{
+					LargeBlock0++;
+				}
+
+				previous_state0 = 1;
 			}
-			
-			previous_state0 = 1;
-		}
-		else
-		{
-			previous_state0 = 0;
-		}
-
-		if (readCountSensor(1))
-		{
-			if (previous_state1 == 0)
+			else
 			{
-				LargeBlock1++;
+				previous_state0 = 0;
 			}
 
-			previous_state1 = 1;
-		}
-		else
-		{
-			previous_state1 = 0;
-		}
+			if (readCountSensor(1))
+			{
+				if (previous_state1 == 0)
+				{
+					LargeBlock1++;
+				}
 
+				previous_state1 = 1;
+			}
+			else
+			{
+				previous_state1 = 0;
+			}
+		}
 		Sleep(10);
 	}
 }
@@ -193,7 +198,7 @@ static char gate_0_state_machine(enum gate_state_e * state0)
 		break;
 
 	case delay_state:
-		if ( get_system_tick_ms() >= start_ticks + 3800)
+		if ( get_system_tick_ms() >= start_ticks + 4800)
 		{
 			*state0 = open_state;
 		}
@@ -205,7 +210,7 @@ static char gate_0_state_machine(enum gate_state_e * state0)
 		return 0;
 
 	case wait_state:
-		if (get_system_tick_ms() >= end_ticks + 1500)
+		if (get_system_tick_ms() >= end_ticks + 1300)
 		{
 			*state0 = gate_idle_state;
 			return 1;
@@ -235,7 +240,7 @@ static char gate_1_state_machine(enum gate_state_e * state1)
 		break;
 
 	case delay_state:
-		if (get_system_tick_ms() >= start_ticks + 3800)
+		if (get_system_tick_ms() >= start_ticks + 4800)
 		{
 			*state1 = open_state;
 		}
@@ -246,7 +251,7 @@ static char gate_1_state_machine(enum gate_state_e * state1)
 		return 0;
 
 	case wait_state:
-		if (get_system_tick_ms() >= end_ticks + 1500)
+		if (get_system_tick_ms() >= end_ticks + 1300)
 		{
 			*state1 = gate_idle_state;
 			return 1;

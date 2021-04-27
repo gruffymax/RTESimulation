@@ -21,23 +21,25 @@ void thread_simulation(void)
 
 	while (simulation_run)
 	{
-		now = get_system_tick_ms();
-		if (now >= next_drop)
+		if (!simulation_pause)
 		{
-			res = block_dropper();
-			next_drop = now + 3000;
-		}
-
-		if (now >= next_move)
-		{
-			if (get_motor_state)
+			now = get_system_tick_ms();
+			if (now >= next_drop)
 			{
-				move_belt0_fwds();
-				move_belt1_fwds();
+				res = block_dropper();
+				next_drop = now + 3000;
 			}
-			next_move = now + 100;
-		}
 
+			if (now >= next_move)
+			{
+				if (get_motor_state)
+				{
+					move_belt0_fwds();
+					move_belt1_fwds();
+				}
+				next_move = now + 100;
+			}
+		}
 		Sleep(20); // A little sleep to save processor time.
 	}
 }
