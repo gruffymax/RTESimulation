@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdint.h>
-#include <Windows.h>
 #include <string.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -9,11 +8,11 @@
 #include "simulation.h"
 #include "ui_display.h"
 #include "simtasks.h"
-#include "semphr.h"
+
 
 //Semaphores
-SEMPHR gate_open_semphr0 = NULL;
-SEMPHR gate_open_semphr1 = NULL;
+HANDLE semphr_gate_0;
+HANDLE semphr_gate_1;
 
 //Global Variables
 extern uint32_t ticks; // Defined in simulation.h
@@ -25,16 +24,16 @@ BOOL simulation_pause = 1;
 //main
 int main()
 {
+
     // Initialistion
     init_screen_buffers();                              // Our function to create screen buffer handles etc
-    gate_open_semphr0 = create_semphr(0);
-    gate_open_semphr1 = create_semphr(0);
+    semphr_gate_0 = CreateSemaphore(NULL, 0, 1, NULL);  // Create a semaphore for gate 0. Starting at 0
+    semphr_gate_1 = CreateSemaphore(NULL, 0, 1, NULL);  // Create a semaphore for gate 1. Starting at 0
 
-    _beginthread(thread_tick, 4, NULL);                 // Start the simulation ticker running
-    _beginthread(thread_simulation, 16, NULL);          // Start the simulation thread
-    _beginthread(thread_task_read_sensors, 64, NULL);   // Start the "Read Sensor" Task
-    _beginthread(thread_task_gate_control, 64, NULL);   // Start the "Gate Control" task
-    _beginthread(thread_task_count_sensor, 64, NULL);   // Start the "Count Sensor" task
+    _beginthread(&thread_simulation, 16, NULL);          // Start the simulation thread
+    _beginthread(&thread_task_read_sensors, 64, NULL);   // Start the "Read Sensor" Task
+    _beginthread(&thread_task_gate_control, 64, NULL);   // Start the "Gate Control" task
+    _beginthread(&thread_task_count_sensor, 64, NULL);   // Start the "Count Sensor" task
     
     while (simulation_run)
     {
@@ -42,10 +41,6 @@ int main()
         get_key_press();
         Sleep(20);
     }
-
-    free(gate_open_semphr0);
-    free(gate_open_semphr1);
-
 }
 
 

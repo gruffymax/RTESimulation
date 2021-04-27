@@ -338,13 +338,36 @@ void update_display(void)
 
         for (i = 0; i < BELT_LENGTH_U; i++)
         {
-            sprintf_s(update_buffer, 100, "%d", sim_get_belt0(i));
-            SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 3, 0));
-            WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
-
-            sprintf_s(update_buffer, 100, "%d", sim_get_belt1(i));
-            SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 3, 5));
-            WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);        
+            if (i == GATE_POS && get_gate0)
+            {
+                // Gate is closed
+                strcpy_s(update_buffer, 100, "|");
+                SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 3, 0));
+                WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
+            }
+            else
+            {
+                // Gate is open
+                sprintf_s(update_buffer, 100, "%d", sim_get_belt0(i));
+                SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 3, 0));
+                WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
+            }
+            
+            if (i == GATE_POS && get_gate0)
+            {
+                // Gate is closed
+                strcpy_s(update_buffer, 100, "|");
+                SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 3, 5));
+                WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
+            }
+            else
+            {
+                // Gate is open
+                sprintf_s(update_buffer, 100, "%d", sim_get_belt1(i));
+                SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(i + 3, 5));
+                WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
+            }
+            
         }
     
     ReadConsoleOutput(hBackgroundBuffer, chiBuffer, coordBufsize, coordBufCoord, &srcRect); //Copy background screen buffer
