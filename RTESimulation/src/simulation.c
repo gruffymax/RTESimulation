@@ -2,7 +2,7 @@
 
 
 static uint8_t block_dropper(void);
-
+static uint32_t simulation_ticks = 0;
 
 extern BOOL simulation_run;
 extern BOOL simulation_pause;
@@ -23,11 +23,12 @@ void thread_simulation(void)
 	{
 		if (!simulation_pause)
 		{
+			increment_simulation_ticks();
 			now = get_system_tick_ms();
 			if (now >= next_drop)
 			{
 				res = block_dropper();
-				next_drop = now + 3000;
+				next_drop = now + 2800;
 			}
 
 			if (now >= next_move)
@@ -99,8 +100,10 @@ static uint8_t block_dropper(void)
 
 uint32_t get_system_tick_ms(void)
 {
-	ULONGLONG current_time;
-	QueryUnbiasedInterruptTime(&current_time);
-	current_time = current_time / 10000;
-	return (uint32_t)current_time;
+	return simulation_ticks;
+}
+
+void increment_simulation_ticks(void)
+{
+	simulation_ticks = simulation_ticks + 20;
 }

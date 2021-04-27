@@ -1,6 +1,9 @@
 #ifndef SIMTASKS_H
 #define SIMTASKS_H
 
+#define GATE_OPEN_DELAY 3700
+#define GATE_CLOSE_DELAY 1600
+
 #include <stdint.h>
 #include <windows.h>
 

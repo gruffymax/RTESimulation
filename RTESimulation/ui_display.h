@@ -4,8 +4,7 @@
 #include <windows.h>
 
 void mainmenu(void);
-void ConveyorOne(void);
-void ConveyorTwo(void);
+void Conveyor(void);
 void init_screen_buffers(void);
 void get_key_press(void);
 void update_display(void);

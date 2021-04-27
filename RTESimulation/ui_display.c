@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include "simulation.h"
-#include <windows.h>
 
 /* Global Variables */
 extern int simulation_run;
