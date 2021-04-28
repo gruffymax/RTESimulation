@@ -1,16 +1,20 @@
 #include "simtasks.h"
 #include "cinterface.h"
+#include "simulation.h"
+#include "circular_buffer.h"
 
-static void sensor_0_state_machine(enum sensor_state_e* state0);
-static void sensor_1_state_machine(enum sensor_state_e* state1);
+
+
+static void sensor_0_state_machine(enum sensor_state_e* state0, char* belt0sensor);
+static void sensor_1_state_machine(enum sensor_state_e* state1, char* belt1sensor);
 static char gate_0_state_machine(enum gate_state_e* state0);
 static char gate_1_state_machine(enum gate_state_e* state1);
 
-extern uint32_t ticks;
+
 extern BOOL simulation_run;
 extern BOOL simulation_pause;
-extern SEMPHR gate_open_semphr0;
-extern SEMPHR gate_open_semphr1;
+extern HANDLE semphr_gate_0;
+extern HANDLE semphr_gate_1;
 
 extern int SmallBlock;
 extern int LargeBlock0;
@@ -53,10 +57,13 @@ void thread_task_gate_control(void)
 	char gate_state = 0;
 	while (simulation_run)
 	{
-		gate0_requested_state = gate_0_state_machine(&state0);
-		gate1_requested_state = gate_1_state_machine(&state1);
-		gate_state = gate0_requested_state | gate1_requested_state << 1;
-		setGates(gate_state);
+		if (!simulation_pause)
+		{
+			gate0_requested_state = gate_0_state_machine(&state0);
+			gate1_requested_state = gate_1_state_machine(&state1);
+			gate_state = gate0_requested_state | gate1_requested_state << 1;
+			setGates(gate_state);
+		}
 		Sleep(10);
 	}
 }
@@ -67,37 +74,39 @@ void thread_task_count_sensor(void)
 	char previous_state1 = 0;
 	while (simulation_run)
 	{
-		resetCountSensor(0);
-		resetCountSensor(1);
-
-		if (readCountSensor(0))
+		if (!simulation_pause)
 		{
-			if (previous_state0 == 0)
+			resetCountSensor(0);
+			resetCountSensor(1);
+
+			if (readCountSensor(0))
 			{
-				LargeBlock0++;
+				if (previous_state0 == 0)
+				{
+					LargeBlock0++;
+				}
+
+				previous_state0 = 1;
 			}
-			
-			previous_state0 = 1;
-		}
-		else
-		{
-			previous_state0 = 0;
-		}
-
-		if (readCountSensor(1))
-		{
-			if (previous_state1 == 0)
+			else
 			{
-				LargeBlock1++;
+				previous_state0 = 0;
 			}
 
-			previous_state1 = 1;
-		}
-		else
-		{
-			previous_state1 = 0;
-		}
+			if (readCountSensor(1))
+			{
+				if (previous_state1 == 0)
+				{
+					LargeBlock1++;
+				}
 
+				previous_state1 = 1;
+			}
+			else
+			{
+				previous_state1 = 0;
+			}
+		}
 		Sleep(10);
 	}
 }
@@ -129,12 +138,18 @@ static void sensor_0_state_machine(enum sensor_state_e *state0, char *belt0senso
 		*state0 = sensor_idle_state;
 		break;
 	case big_state:
-		give_semphr(gate_open_semphr0);
+		add_to_circular_buffer0(get_system_tick_ms() + GATE_OPEN_DELAY);
 		*state0 = sensor_idle_state;
 		break;
 	default:
 		*state0 = sensor_idle_state;
 		break;
+	}
+
+	if (get_system_tick_ms() >= get_next_value_circular_buffer0() && get_next_value_circular_buffer0() > 0)
+	{
+		ReleaseSemaphore(semphr_gate_0, 1, NULL); // Give the semaphore to signal the gate to open
+		pop_head_circular_buffer0();
 	}
 }
 
@@ -165,12 +180,18 @@ static void sensor_1_state_machine(enum sensor_state_e *state1, char *belt1senso
 		*state1 = sensor_idle_state;
 		break;
 	case big_state:
-		give_semphr(gate_open_semphr1);
+		add_to_circular_buffer1(get_system_tick_ms() + GATE_OPEN_DELAY);
 		*state1 = sensor_idle_state;
 		break;
 	default:
 		*state1 = sensor_idle_state;
 		break;
+	}
+
+	if (get_system_tick_ms() >= get_next_value_circular_buffer1() && get_next_value_circular_buffer1() > 0)
+	{
+		ReleaseSemaphore(semphr_gate_1, 1, NULL); // Give the semaphore to signal the gate to open
+		pop_head_circular_buffer1();
 	}
 }
 
@@ -182,29 +203,21 @@ static char gate_0_state_machine(enum gate_state_e * state0)
 	switch (*state0)
 	{
 	case gate_idle_state:
-		if (take_semphr(gate_open_semphr0) == 1)
+		if (WaitForSingleObject(semphr_gate_0, 0) == 0)
 		{
-			start_ticks = ticks;
-			*state0 = delay_state;
-		}
-		break;
-
-	case delay_state:
-		if (ticks >= start_ticks + 38)
-		{
+			start_ticks = get_system_tick_ms();
 			*state0 = open_state;
 		}
 		break;
 
 	case open_state:
 		*state0 = wait_state;
-		end_ticks = ticks;
+		end_ticks = get_system_tick_ms();
 		return 0;
 
 	case wait_state:
-		if (ticks >= end_ticks + 15)
+		if (get_system_tick_ms() >= end_ticks + GATE_CLOSE_DELAY)
 		{
-			Sleep(1500);
 			*state0 = gate_idle_state;
 			return 1;
 		}
@@ -225,26 +238,20 @@ static char gate_1_state_machine(enum gate_state_e * state1)
 	switch (*state1)
 	{
 	case gate_idle_state:
-		if (take_semphr(gate_open_semphr1) == 1)
+		if (WaitForSingleObject(semphr_gate_1, 0) == 0)
 		{
-			start_ticks = ticks;
-			*state1 = delay_state;
-		}
-		break;
-
-	case delay_state:
-		if (ticks >= start_ticks + 38)
-		{
+			start_ticks = get_system_tick_ms();
 			*state1 = open_state;
 		}
 		break;
+
 	case open_state:
 		*state1 = wait_state;
-		end_ticks = ticks;
+		end_ticks = get_system_tick_ms();
 		return 0;
 
 	case wait_state:
-		if (ticks >= end_ticks + 15)
+		if (get_system_tick_ms() >= end_ticks + GATE_CLOSE_DELAY)
 		{
 			*state1 = gate_idle_state;
 			return 1;
