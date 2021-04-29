@@ -36,8 +36,8 @@ int main()
     
     while (simulation_run)
     {
-        update_display();
+        update_display();   //Performing functions
         get_key_press();
-        Sleep(20);
+        Sleep(20);          //System sleep 20ms
     }
 }

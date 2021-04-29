@@ -11,13 +11,13 @@ uint32_t circular_buffer1[C_BUFFER_LENGTH];
 
 char add_to_circular_buffer0(uint32_t value)
 {
-    if (item_count0 == C_BUFFER_LENGTH)
+    if (item_count0 == C_BUFFER_LENGTH) //Checks integer equal to buffer length designated
     {
         return 1; //Buffer full error
     }
 
-    circular_buffer0[bufferTail0] = value;
-    if (bufferTail0 < C_BUFFER_LENGTH - 1)
+    circular_buffer0[bufferTail0] = value; //Replace buffer array value
+    if (bufferTail0 < C_BUFFER_LENGTH - 1) //Keeps track of tail values of the buffer
     {
         bufferTail0++;
     }
@@ -31,9 +31,9 @@ char add_to_circular_buffer0(uint32_t value)
 
 uint32_t get_next_value_circular_buffer0(void)
 {
-    if (item_count0 > 0)
+    if (item_count0 > 0)            
     {
-        return circular_buffer0[bufferHead0];
+        return circular_buffer0[bufferHead0];  //returns the head of queue value 
     }
     else
     {
@@ -43,19 +43,19 @@ uint32_t get_next_value_circular_buffer0(void)
 
 void pop_head_circular_buffer0(void)
 {
-    uint32_t value = circular_buffer0[bufferHead0];
-    if (bufferHead0 < C_BUFFER_LENGTH - 1)
+    uint32_t value = circular_buffer0[bufferHead0]; //Variable assigned to head of buffer queue
+    if (bufferHead0 < C_BUFFER_LENGTH - 1)          //Keeps track of head of buffer values 
     {
-        bufferHead0++;
+        bufferHead0++;                              //increment head of buffer position
     }
     else
     {
-        bufferHead0 = 0;
+        bufferHead0 = 0;                            //head equals 0
     }
 
     if (item_count0 > 0)
     {
-        item_count0--;
+        item_count0--;                              //decrement item count
     }
 }
 
@@ -79,7 +79,7 @@ char add_to_circular_buffer1(uint32_t value)
     return 0;
 }
 
-uint32_t get_next_value_circular_buffer1(void)
+uint32_t get_next_value_circular_buffer1(void) //checking for next value in the buffer to be shifted 
 {
     if (item_count1 > 0)
     {
@@ -91,7 +91,7 @@ uint32_t get_next_value_circular_buffer1(void)
     }
 }
 
-void pop_head_circular_buffer1(void)
+void pop_head_circular_buffer1(void)    //function for replacing new values of the buffer
 {
     uint32_t value = circular_buffer1[bufferHead1];
     if (bufferHead1 < C_BUFFER_LENGTH - 1)

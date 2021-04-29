@@ -9,7 +9,7 @@ extern int simulation_pause;
 
 /* Variables */
 HANDLE hStdout, hBackgroundBuffer, hDisplayBuffer, hStdin = NULL;
-char text_buffer[200];
+char text_buffer[100];
 int page;
 int LargeBlock0;
 int LargeBlock1;
@@ -19,9 +19,9 @@ int SmallBlock1;
 void mainmenu(void)
 {
     /*MAIN MENU OPTIONS*/
-    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 7)); // Move cursor to Top-Left corner of buffer
-    sprintf_s(text_buffer, 100, "Please select the option you wish to choose:"); // Create text buffer to display
-    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL); // Put text buffer onto screen at the cursor position
+    SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(0, 7));                          // Move cursor to Top-Left corner of buffer
+    sprintf_s(text_buffer, 100, "Please select the option you wish to choose:");            // Create text buffer to display
+    WriteConsoleA(hBackgroundBuffer, text_buffer, (DWORD)strlen(text_buffer), NULL, NULL);  // Put text buffer onto screen at the cursor position
 
     SetConsoleCursorPosition(hBackgroundBuffer, set_cursor(5, 8)); // Move cursor to a new position
     sprintf_s(text_buffer, 100, "[1] - Conveyor 1 & 2"); // Create text buffer
@@ -228,26 +228,26 @@ void Conveyor(void)
 
 void get_key_press(void)
 {
-    BOOL res;
+    BOOL res;               //local variables
     INPUT_RECORD irInBuff;
     int chars_out = 0;
 
-    GetNumberOfConsoleInputEvents(hStdin, &chars_out);
-    if (chars_out != 0)
+    GetNumberOfConsoleInputEvents(hStdin, &chars_out);  //Detects key and mouse movements - reducing flickering on console
+    if (chars_out > 0)                                 // statements for checking that variable is not equal to 0
     {
-        res = ReadConsoleInput(hStdin, &irInBuff, 1, &chars_out);
+        res = ReadConsoleInput(hStdin, &irInBuff, 1, &chars_out);   //reading the buffer inputs
 
-        if (irInBuff.EventType == KEY_EVENT && irInBuff.Event.KeyEvent.bKeyDown == 1)
+        if (irInBuff.EventType == KEY_EVENT && irInBuff.Event.KeyEvent.bKeyDown == 1)   //if statement for checking key event press
         {
-            switch (irInBuff.Event.KeyEvent.uChar.AsciiChar)
+            switch (irInBuff.Event.KeyEvent.uChar.AsciiChar)    //Switch statement variable passthrough - Series of cases for different buffer overlays
             {
-            case '1':
+            case '1':                                           // Conveyor 1 and 2 data
                 page = 1;
                 break;
-            case '0':
+            case '0':                                           //Main menu option
                 page = 0;
                 break;
-            case 'p':
+            case 'p':                                           //Pause
                 if (simulation_pause)
                 {
                     simulation_pause = 0;
@@ -266,30 +266,30 @@ void get_key_press(void)
         }
     }
 }
-void init_screen_buffers(void)
+void init_screen_buffers(void)                      // Buffer setup function
 {
     BOOL res = 0;
     hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD fdwMode = ENABLE_WINDOW_INPUT;
     res = SetConsoleMode(hStdin, fdwMode);
-    hStdin = GetStdHandle(STD_INPUT_HANDLE); // Get the stdin handle so we can get key presses
+    hStdin = GetStdHandle(STD_INPUT_HANDLE);        // Get the stdin handle so we can get key presses
     hBackgroundBuffer = CreateConsoleScreenBuffer(
-        GENERIC_READ |           // read/write access
+        GENERIC_READ |                              // read/write access
         GENERIC_WRITE,
         FILE_SHARE_READ |
-        FILE_SHARE_WRITE,        // shared
-        NULL,                    // default security attributes
-        CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE
-        NULL);                   // reserved; must be NULL
+        FILE_SHARE_WRITE,                           // shared
+        NULL,                                       // default security attributes
+        CONSOLE_TEXTMODE_BUFFER,                    // must be TEXTMODE
+        NULL);                                      // reserved; must be NULL
 
     hDisplayBuffer = CreateConsoleScreenBuffer(
-        GENERIC_READ |           // read/write access
+        GENERIC_READ |                              // read/write access
         GENERIC_WRITE,
         FILE_SHARE_READ |
-        FILE_SHARE_WRITE,        // shared
-        NULL,                    // default security attributes
-        CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE
-        NULL);                   // reserved; must be NULL
+        FILE_SHARE_WRITE,                           // shared
+        NULL,                                       // default security attributes
+        CONSOLE_TEXTMODE_BUFFER,                    // must be TEXTMODE
+        NULL);                                      // reserved; must be NULL
 
     CONSOLE_CURSOR_INFO cur = { 1, 0 };
     SetConsoleCursorInfo(hDisplayBuffer, &cur);
@@ -299,32 +299,32 @@ void init_screen_buffers(void)
 
 void clear_display(HANDLE hbuffer)
 {
-    CONSOLE_SCREEN_BUFFER_INFO bufferinfo;  //added 22/03/21
-    DWORD cCharsWritten, dwConSize;         //added 22/03/21
-    COORD coordScreen = { 0,0 };              //added 22/03/21
+    CONSOLE_SCREEN_BUFFER_INFO bufferinfo;                  //Local variables
+    DWORD cCharsWritten, dwConSize;                         
+    COORD coordScreen = { 0,0 };                            //Sets initial cursor position                      
 
-    GetConsoleScreenBufferInfo(hbuffer, &bufferinfo);   //-----ADDED 22/03/21----- attempt to add blank spaces
+    GetConsoleScreenBufferInfo(hbuffer, &bufferinfo);       //Adds blank spaces
     dwConSize = bufferinfo.dwSize.X * bufferinfo.dwSize.Y;
-    if (!FillConsoleOutputCharacter(hbuffer,            // Handle to console screen buffer
-        (TCHAR)' ',                                     // Character to write to the buffer
-        dwConSize,                                      // Number of cells to write
-        coordScreen,                                    // Coordinates of first cell
-        &cCharsWritten))                                // Receive number of characters written 
+    if (!FillConsoleOutputCharacter(hbuffer,                // Handle to console screen buffer
+        (TCHAR)' ',                                         // Character to write to the buffer
+        dwConSize,                                          // Number of cells to write
+        coordScreen,                                        // Coordinates of first cell
+        &cCharsWritten))                                    // Receive number of characters written 
     {
-        while (1); //Error occured, halt here
+        while (1);                                          //Error occured, halt here
     }
 
 }
 
 COORD set_cursor(int X, int Y)
 {
-    COORD pos = { X, Y };
+    COORD pos = { X, Y };           //Setting cursor position on buffers
     return pos;
 }
 
 void update_display(void)
 {
-    /* VARIABLES */
+    /* LOCAL VARIABLES */
     CONSOLE_SCREEN_BUFFER_INFO bufferinfo;
     GetConsoleScreenBufferInfo(hDisplayBuffer, &bufferinfo);
     SMALL_RECT srcRect = { 0, 0, bufferinfo.dwSize.X - 1, bufferinfo.dwSize.Y - 1 };
@@ -335,10 +335,10 @@ void update_display(void)
     char update_buffer[110] = { 0 };
     int i = 0;
 
-    clear_display(hBackgroundBuffer);
-    switch (page)
+    clear_display(hBackgroundBuffer);   //clear display function - clears buffer
+    switch (page)                       //Switch statement for cycling between buffers
     {
-    case 1:
+    case 1:                             //Cases for choices
         Conveyor();
         break;
     case 0:
@@ -348,9 +348,9 @@ void update_display(void)
         break;
     }
 
-        for (i = 0; i < BELT_LENGTH_U; i++)
+        for (i = 0; i < BELT_LENGTH_U; i++)     // for loop for the creation of simulation (Conveyor 1 and 2)
         {
-            if (i == GATE_POS && get_gate0() == 1)
+            if (i == GATE_POS && get_gate0() == 1)  //Managing gate opening and closing conv 1
             {
                 // Gate is closed
                 strcpy_s(update_buffer, 100, "|");
@@ -365,7 +365,7 @@ void update_display(void)
                 WriteConsoleA(hBackgroundBuffer, update_buffer, (DWORD)strlen(update_buffer), NULL, NULL);
             }
             
-            if (i == GATE_POS && get_gate1() == 1)
+            if (i == GATE_POS && get_gate1() == 1)  //Managing gate opening and closing conv 2
             {
                 // Gate is closed
                 strcpy_s(update_buffer, 100, "|");
