@@ -39,7 +39,7 @@
     <ClCompile Include="simtasks.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="semphr.c">
+    <ClCompile Include="circular_buffer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,7 +65,7 @@
     <ClInclude Include="simtasks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="semphr.h">
+    <ClInclude Include="circular_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
